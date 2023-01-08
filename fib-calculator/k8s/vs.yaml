@@ -1,0 +1,23 @@
+# apiVersion: secrets-store.csi.x-k8s.io/v1
+# kind: SecretProviderClass
+# metadata:
+#   # name: azure-workloadidapp2-kv-app5akswik32dhm5i45tf
+#   name: serverspc
+#   namespace: superapp
+# spec:
+#   parameters:
+#     clientID: 5a102989-9926-44ec-94eb-d7afba9cb1d9
+#     keyvaultName: kv-appsuperappoejvsz4lja
+#     objects: |
+#       array:
+#         - |
+#           objectName: pgpassword
+#           objectType: secret
+#     tenantId: 449fbe1d-9c99-4509-9014-4fd5cf25b014
+#   provider: azure
+#   secretObjects:
+#   - data:
+#     - key: pgpassword
+#       objectName: pgpassword
+#     secretName: pgpassword
+#     type: Opaque
