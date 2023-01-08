@@ -5,6 +5,9 @@ git clone https://github.com/mosabami/AKS-Superapp
 ```
 In this workshop, you are a develop who created an app that calculates fibonacci number of indexes. You have written the code and would love to deploy it online. You have chosen to deploy it to a k8s cluster. You have heard Azure and AKS is the best place for kubernetes. You decide to try it out yourself.
 
+## Prerequisites
+It is assumed you have basic knowledge of containers and kubernetes. You would also require Contributor and User Access Admin access to an Azure subscription and an AAD tenant where you have User Admin access. On your computer you will need to have [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install), [jq](https://stedolan.github.io/jq/download/) and some other packages installed. Docker desktop would be required for some optional steps.
+
 ## Test the app on your computer (optional)
 If you have docker desktop install on your computer and you have some experience with docker-compose you can run the application on your local computer. 
 Run the application using docker-compose.
