@@ -4,8 +4,8 @@ metadata:
   name: serversa
   namespace: superapp
   annotations:
-    azure.workload.identity/client-id: 86957e6d-bfc4-4bba-bdb8-9b3c2c97a1d9
-    azure.workload.identity/tenant-id: 449fbe1d-9c99-4509-9014-4fd5cf25b014
+    azure.workload.identity/client-id: <identity clientID>
+    azure.workload.identity/tenant-id: <tenant ID>
   labels:
     azure.workload.identity/use: "true"
 ---

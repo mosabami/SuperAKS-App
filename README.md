@@ -248,3 +248,6 @@ This exercise shows one of the advantages of containers and kubernetes. You can 
 
 ## DevOps on AKS with GH Actions
 This section is coming soon
+
+## Other AKS features that aid developer productivity
+This section is coming soon

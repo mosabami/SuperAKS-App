@@ -24,7 +24,7 @@ spec:
               secretProviderClass: pgpasswordspc
       containers:
         - name: server
-          image: crsuperappkyrsq6m7kijni.azurecr.io/server:v1
+          image: <ACR name>.azurecr.io/server:v1
           imagePullPolicy: Always
           resources:
             requests:

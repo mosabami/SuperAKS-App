@@ -23,6 +23,6 @@ spec:
               cpu: 1000m
               memory: 256Mi
           imagePullPolicy: Always
-          image: crsuperappkyrsq6m7kijni.azurecr.io/client:v1
+          image: <ACR name>.azurecr.io/client:v1
           ports: 
             - containerPort: 3000

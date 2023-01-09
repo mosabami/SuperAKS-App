@@ -34,7 +34,7 @@ spec:
           - name: secrets-mount
             mountPath: "/mnt/secrets-store"
             readOnly: true
-          image: crsuperappkyrsq6m7kijni.azurecr.io/library/postgres:latest
+          image: <ACR name>.azurecr.io/library/postgres:latest
           ports:
             - containerPort: 5432
           env:
