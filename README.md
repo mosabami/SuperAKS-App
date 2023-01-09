@@ -11,8 +11,8 @@ AKS has a lot of amazing features that makes software development and delivery v
 * Azure RBAC integration with AKS
 * Azure Key vault integration and the CSI driver for easy secrets management
 * Azure container registry integration for storage in a High availability registry as well as image security
-* AKS workload identity which makes it easy to assign identities to individual pods in your cluster for better security. It can be integrated with various identity providers
-* AKS CNI overlay so you dont have to worry about pod IP exhaustion
+* AKS workload identity (preview) which makes it easy to assign identities to individual pods in your cluster for better security. It can be integrated with various identity providers 
+* AKS CNI overlay (preview) so you dont have to worry about pod IP exhaustion
 * Horizontal pod autoscaler
 * Cluster autoscaler for easy and quick scaling of your application
 * Azure load testing (preview) to test scability of your application
