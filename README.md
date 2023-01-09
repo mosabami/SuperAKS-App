@@ -35,17 +35,17 @@ Here is what the architecture of the app looks like
 ![App architecture](./media/service-architecture.png)
 
 ## About the infrastructure
-Now that we have seen the app running locally, it is time to deploy it to AKS. There are preview features being used including OIDC issuer, [workload identity](https://learn.microsoft.com/en-us/azure/aks/workload-identity-deploy-cluster#register-the-enableworkloadidentitypreview-feature-flag) and CNI overlay. You will need to ensure these features are enabled in your subscription before proceeding with the deployment.
+Now that we have seen the app running locally, it is time to deploy it to AKS. There are preview features being used including [workload identity](https://learn.microsoft.com/en-us/azure/aks/workload-identity-deploy-cluster#register-the-enableworkloadidentitypreview-feature-flag) and [CNI overlay](https://learn.microsoft.com/en-us/azure/aks/azure-cni-overlay#register-the-azureoverlaypreview-feature-flag). You will need to ensure these features are enabled in your subscription before proceeding with the deployment.
 
 ### Optional note (ignore this during workshop):
 You can also use AKSC deployment helper UI to make this deployment by clicking on [this link](https://azure.github.io/AKS-Construction/?net.networkPluginMode=true&net.vnetAksSubnetAddressPrefix=10.240.0.0%2F24&net.podCidr=10.244.0.0%2F16&addons.ingress=nginx&deploy.deployItemKey=deployArmCli&addons.workloadIdentity=true), but in this case because of the level of customization required and for easy automation, we will be using AKSC's underlying Bicep code. The differences between the deployment made by the link above and this customization we will be using are as follows:
 * CSI driver for keyvault addon will be enabled in your cluster using the automation script. You will have to enable that addon yourself using CLI command after creating the cluster if you use the UI option. 
-* We wil be creating a keyvault using custom bicep code and we will also be creating a secret in the deployed keyvault (see kvRbac.bicep)
+* We will be creating a keyvault using custom bicep code and we will also be creating a secret in the deployed keyvault (see kvRbac.bicep in IaC folder)
 * The workload identity addon will not be deployed by using the managed addon, we are using helm charts to install them instead (check workloadId.bicep)
 
 [AKS Construction (AKSC)](https://github.com/Azure/Aks-Construction#getting-started) is part of the [AKS landing zone accelerator](https://aka.ms/akslza/referenceimplementation) program and allows rapid development and deployment of secure AKS clusters and its supporting resources using IaC (mostly Bicep), Azure CLI and/or GitHub Actions.
 
-## Deploymentg
+## Deployment
 To begin, clone AKSC repo.
 
 ```bash
