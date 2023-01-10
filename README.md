@@ -10,6 +10,7 @@ AKS has a lot of amazing features that makes software development and delivery v
 * Azure AD for authentication so you don't have to manage that yourself
 * Azure RBAC integration with AKS
 * Azure Key vault integration and the CSI driver for easy secrets management
+* AKS persistent volume & persistent volume claim provisioning Azure file resources dynamically
 * Azure container registry integration for storage in a High availability registry as well as image security
 * AKS workload identity (preview) which makes it easy to assign identities to individual pods in your cluster for better security. It can be integrated with various identity providers 
 * AKS CNI overlay (preview) so you dont have to worry about pod IP exhaustion
@@ -133,7 +134,7 @@ sed -i  "s/<ACR name>/$ACRNAME/" worker-deployment.yaml
 ```
 Update the secret provider class file
 ```bash
-sed -i  "s/<identity clientID>/$SUPERAPPID/" postgres-secret-provider-class.yaml
+sed -i  "s/<identity clientID>/$SUPERAPPID/" secret-provider-class.yaml
 sed -i  "s/<kv name>/$KVNAME/" postgres-secret-provider-class.yaml
 sed -i  "s/<tenant ID>/$TENANTID/" postgres-secret-provider-class.yaml
 ```

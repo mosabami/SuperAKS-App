@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+
+kind: Deployment
+metadata:
+  name: worker-deployment
+  namespace: superapp
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: worker
+  template:
+    metadata:
+      labels:
+        component: worker
+    spec:
+      serviceAccountName: workersa
+      containers:
+        - name: worker
+          resources:
+            requests:
+              cpu: 30m
+              memory: 128Mi
+            limits:
+              cpu: 60m
+              memory: 256Mi
+          image: <ACR name>.azurecr.io/worker:v1
+          env:
+            - name: REDIS_HOST
+              value: redis-cluster-ip-service
+            - name: REDIS_PORT
+              value: '6379'
+

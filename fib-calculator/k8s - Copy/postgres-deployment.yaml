@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+  namespace: superapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: postgres
+  template:
+    metadata:
+      labels:
+        component: postgres
+    spec:
+      serviceAccountName: serversa
+      volumes:
+        - name: secrets-mount
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: pgpasswordspc
+      containers:
+        - name: postgres
+          resources:
+            requests:
+              cpu: 20m
+              memory: 128Mi
+            limits:
+              cpu: 70m
+              memory: 256Mi
+          volumeMounts:
+          - name: secrets-mount
+            mountPath: "/mnt/secrets-store"
+            readOnly: true
+          image: <ACR name>.azurecr.io/library/postgres:latest
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER 
+              value: pguser
+            - name: POSTGRES_PASSWORD
+              valueFrom: 
+                secretKeyRef: 
+                  name: pgpassword
+                  key: pgpassword

@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-persistent-volume-claim
+  namespace: superapp
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: redis-storage-class
+  resources:
+    requests:
+      storage: 100Gi
+
+---
+
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: redis-storage-class
+  namespace: superapp
+provisioner: file.csi.azure.com # replace with "kubernetes.io/azure-file" if aks version is less than 1.21
+allowVolumeExpansion: true
+parameters:
+  skuName: Premium_LRS

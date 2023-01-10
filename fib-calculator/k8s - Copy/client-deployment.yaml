@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+
+kind: Deployment
+metadata:
+  name: client-deployment
+  namespace: superapp
+spec:
+  selector: 
+    matchLabels:
+      component: web
+  template:
+    metadata:
+      labels: 
+        component: web
+    spec:
+      containers:
+        - name: client
+          resources:
+            requests:
+              cpu: 500m
+              memory: 128Mi
+            limits:
+              cpu: 1000m
+              memory: 256Mi
+          imagePullPolicy: Always
+          image: <ACR name>.azurecr.io/client:v1
+          ports: 
+            - containerPort: 3000
