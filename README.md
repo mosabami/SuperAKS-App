@@ -135,8 +135,8 @@ sed -i  "s/<ACR name>/$ACRNAME/" worker-deployment.yaml
 Update the secret provider class file
 ```bash
 sed -i  "s/<identity clientID>/$SUPERAPPID/" secret-provider-class.yaml
-sed -i  "s/<kv name>/$KVNAME/" postgres-secret-provider-class.yaml
-sed -i  "s/<tenant ID>/$TENANTID/" postgres-secret-provider-class.yaml
+sed -i  "s/<kv name>/$KVNAME/" secret-provider-class.yaml
+sed -i  "s/<tenant ID>/$TENANTID/" secret-provider-class.yaml
 ```
 
 Update the service account files. These service accounts are using workload identity federated identity.

@@ -62,7 +62,7 @@ class Fib extends Component {
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
-            <p>This app calculates the Fibonacci number of a provided index</p>
+            <p>This app computes the Fibonacci number of a provided index</p>
             <p>Enter a number below 40 and hit submit then refresh the page to see results</p>
           <label>Enter your index:</label>
           <input

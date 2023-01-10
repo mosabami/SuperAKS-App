@@ -41,6 +41,7 @@ build/Release
 node_modules/
 jspm_packages/
 AKS-Construction/
+k8s-Copy/
 
 # TypeScript v1 declaration files
 typings/
