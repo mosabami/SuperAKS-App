@@ -46,6 +46,7 @@ AKS-Construction/
 k8s-Copy/
 .vscode/
 .vscode
+.vscode/task.json
 
 # TypeScript v1 declaration files
 typings/
