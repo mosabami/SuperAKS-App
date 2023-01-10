@@ -11,6 +11,7 @@ AKS has a lot of amazing features that makes software development and delivery v
 * Azure RBAC integration with AKS
 * Azure Key vault integration and the CSI driver for easy secrets management
 * AKS persistent volume & persistent volume claim provisioning Azure file resources dynamically
+* Bridge to Kubernetes which allows you to test & debug individual microservices against other services running on AKS
 * Azure container registry integration for storage in a High availability registry as well as image security
 * AKS workload identity (preview) which makes it easy to assign identities to individual pods in your cluster for better security. It can be integrated with various identity providers 
 * AKS CNI overlay (preview) so you dont have to worry about pod IP exhaustion
@@ -65,6 +66,7 @@ Create deployment
 az group create -n $RGNAME -l EastUs
 DEP=$(az deployment group create -g $RGNAME  --parameters signedinuser=$SIGNEDINUSER  -f main.bicep -o json)
 ```
+Note: DEP variable is very important and will be used in subsequent steps. You can save it by running `echo $DEP > test.json` and restore it by running `export DEP=$(cat test.json)`
 
 Get required variables
 ```bash
@@ -246,6 +248,10 @@ After a couple of minutes, heading over to the "Nodes" tab of Azure monitor show
 Lets test it again but this time with threads set to 300 and loops set to 450. You can also update the loadtesting/worker-hpa.yaml and server-hpa.yaml files to increase the `maxReplicas` numbers.
 
 This exercise shows one of the advantages of containers and kubernetes. You can optimize the utilization of your nodes (virtual machines) and scale various components of your application independently to increase and decrease based on the demand on that particular service. With AKS CNI overlay, you don't have to worry about IP exhaustion. The overlay network takes care of that for you. You can have max 250 pods in each node with CNI overlay and those IP addresses will be from a different IP space than your node (and virtual network).
+
+
+## Testing & Debuging individual microservices using Bridge to Kubernetes
+Code complete. Need to write instructions.
 
 ## DevOps on AKS with GH Actions
 This section is coming soon
