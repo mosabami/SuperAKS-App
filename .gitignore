@@ -45,6 +45,7 @@ jspm_packages/
 AKS-Construction/
 k8s-Copy/
 .vscode/
+.vscode
 
 # TypeScript v1 declaration files
 typings/
