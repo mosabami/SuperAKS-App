@@ -19,7 +19,6 @@ function fib(index) {
 sub.subscribe('insert', ( message) => {
   redisClient.hSet('values', message, fib(parseInt(message)));
 });
-// sub.subscribe('insert');
 
 // this section is used to test out bridge to kubernetes
 
