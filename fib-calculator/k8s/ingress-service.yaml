@@ -32,3 +32,13 @@ spec:
                 name: server-cluster-ip-service
                 port:
                   number: 5000
+          - path: /worker/?(.*)
+            # UPDATE PATH
+            pathType: Prefix
+            # ADD PATHTYPE
+            backend:
+              service:
+                # UPDATE SERVICE FIELDS
+                name: worker-cluster-ip-service
+                port:
+                  number: 5001

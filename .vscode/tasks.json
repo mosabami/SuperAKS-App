@@ -1,0 +1,17 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "bridge-to-kubernetes.resource",
+			"type": "bridge-to-kubernetes.resource",
+			"resource": "worker-cluster-ip-service",
+			"resourceType": "service",
+			"ports": [
+				5001
+			],
+			"targetCluster": "aks-superapp",
+			"targetNamespace": "superapp",
+			"useKubernetesServiceEnvironmentVariables": false
+		}
+	]
+}

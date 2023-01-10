@@ -60,6 +60,8 @@ services:
     build:
       dockerfile: Dockerfile.dev
       context: ./worker
+    ports:
+      - 5001:5001
     # volumes:
     #   - /app/node_modules
     #   - ./worker:/app
