@@ -1,4 +1,4 @@
-# AKS Superapp
+# SuperAKS-App
 In this repo, you will learn about some of the various AKS features that make it easier for developers to deploy that code without having to worry too much about infrastructure. Begin by cloning the repository.
 ```bash
 git clone https://github.com/mosabami/AKS-Superapp
