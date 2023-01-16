@@ -4,6 +4,7 @@ In this repo, you will learn about some of the AKS features that make it easier 
 
 ```bash
 git clone https://github.com/mosabami/AKS-Superapp
+cd AKS-Superapp
 ```
 In this workshop, you are a developer who created an app that calculates fibonacci number of indexes. You have written the code and would love to deploy it online. You have chosen to deploy it to a k8s cluster. You have heard AKS is the best place for kubernetes. You decide to try it out yourself.
 
@@ -61,12 +62,23 @@ Here is what the architecture of the app looks like
 * Redis microservice runs a redis instance and has a persistent volume claim when deployed to Azure
 * Postgres microservice runs a postgres instance that is currently not persisted. To be replaced by a Azure postgres database in the future
 
+CD out of the fib-calculator folder.
+```bash
+cd ..
+```
+
 ## About the infrastructure
 Now that we have seen the app running locally, it is time to deploy it to AKS. There are preview features being used including [workload identity](https://learn.microsoft.com/en-us/azure/aks/workload-identity-deploy-cluster#register-the-enableworkloadidentitypreview-feature-flag) and [CNI overlay](https://learn.microsoft.com/en-us/azure/aks/azure-cni-overlay#register-the-azureoverlaypreview-feature-flag). You will need to ensure these features are enabled in your subscription before proceeding with the deployment.
 
 ### About AKS Landing Zone Accelerator (AKS-LZA)
 [AKS Construction (AKSC)](https://github.com/Azure/Aks-Construction#getting-started) is part of the [AKS landing zone accelerator](https://aka.ms/akslza/referenceimplementation) program and allows rapid development and deployment of secure AKS clusters and its supporting resources using IaC (mostly Bicep), Azure CLI and/or GitHub Actions. AKS Landing Zone Accelerator is a set of tools, resources and guidance that helps deploy and operationalize secure and scalable AKS and supporting services rapidly, AKS Construction helper being one of them. Check out the [official docs](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/aks/landing-zone-accelerator) for more information.
 > :warning: It is very important to note that the AKS-LZA can be used to develop secure and compliant AKS clusters that are (almost) ready for production. However, many of the best practice guidance are not used in this implementation to facilitate easy learning and deployment in this workshop. **Do not use this configuration for production workloads**. To deploy a more secure environment, consider reading the AKS-LZA docs and/or deploy your environment using a configuration [similar to this](https://azure.github.io/AKS-Construction/?preset=entScaleOps&entscale=online&cluster.AksPaidSkuForSLA=true&cluster.SystemPoolType=Standard&cluster.upgradeChannel=rapid&net.cniDynamicIpAllocation=true&net.maxPods=250&net.podCidr=10.240.100.0%2F24&net.bastion=true&net.azureFirewallsSku=Premium). 
+
+You will need to clone the AKSC repository which has the bicep files our deployment depends on into the IaC folder.
+```bash
+cd IaC
+git clone https://github.com/Azure/AKS-Construction
+```
 
 ## Deployment
 Get the signed in user id so that you can get admin access to the cluster you create
