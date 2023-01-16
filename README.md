@@ -24,9 +24,23 @@ AKS has a lot of amazing features that makes software development and delivery v
 * Azure load testing (preview) to test scalability of your application
 * GitHub Actions and the Draft tool for rapidly building CI/CD pipelines (coming soon)
 
+If there are other AKS features you'd like to see here that help with developer productivity, please create an issue. PRs are also welcome!
+
 ## Prerequisites
-It is assumed you have basic knowledge of Containers, Kubernetes and Azure. You would also require Contributor and User Access Admin access to an Azure subscription and an AAD tenant where you have User Admin access. On your computer you will need to have git, [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install), [jq](https://stedolan.github.io/jq/download/), [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/), [sed](https://gnuwin32.sourceforge.net/packages/sed.htm) (optional) and the Azure CLI. Docker desktop would be required for some optional steps. All commands are designed to run on bash terminals.
-You will also require visual studio code with the following extensions installed for some optional steps: Azure Kubernetes Service, Azure tools, Bridge to Kubernetes, Developer Tools for Azure Kubernetes Service. You can install these by searching for them in the Extensions tab.
+It is assumed you have basic knowledge of Containers, Kubernetes and Azure. You would also require Contributor and User Access Admin access to an Azure subscription and an AAD tenant where you have User Admin access. On your computer you will need to have the following installed
+* git, 
+* [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install),
+* [jq](https://stedolan.github.io/jq/download/), 
+* [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/),
+* [sed](https://gnuwin32.sourceforge.net/packages/sed.htm) (optional)   
+* Azure CLI. 
+Docker desktop would be required for some optional steps. All commands are designed to run on bash terminals.
+You will also require visual studio code with the following extensions installed for some **optional** steps: 
+* Azure Kubernetes Service
+* Azure tools
+* Bridge to Kubernetes
+* Developer Tools for Azure Kubernetes Service. 
+You can install these by searching for them in the Extensions tab.
 
 ## Test the app on your computer (optional)
 If you have docker desktop install on your computer and you have some experience with docker-compose you can run the application on your local computer. 
@@ -40,6 +54,11 @@ You can access the website at port 3050 on your local computer using NGINX as an
 
 Here is what the architecture of the app looks like
 ![App architecture](./media/service-architecture.png)
+* The Client Server is a React app that renders the front end of the app on a browser
+* The API server receives requests from the front end and updates the database with the requested information. It stores a placeholder as the value of the index requested by the front end and stores it in redis
+* The worker listens to redis and whenever there is a new entry by the API server, it takes the index, calculates the fibonacci number and replaces the placeholder by the correct value. It can also be accessed directly just for the purpose of testing the bridge to kubernetes feature.
+* Redis microservice runs a redis instance and has a persistent volume claim when deployed to Azure
+* Postgres microservice runs a postgres instance that is currently not persisted. To be replaced by a Azure postgres database in the future
 
 ## About the infrastructure
 Now that we have seen the app running locally, it is time to deploy it to AKS. There are preview features being used including [workload identity](https://learn.microsoft.com/en-us/azure/aks/workload-identity-deploy-cluster#register-the-enableworkloadidentitypreview-feature-flag) and [CNI overlay](https://learn.microsoft.com/en-us/azure/aks/azure-cni-overlay#register-the-azureoverlaypreview-feature-flag). You will need to ensure these features are enabled in your subscription before proceeding with the deployment.
@@ -277,6 +296,6 @@ This exercise shows one of the advantages of containers and kubernetes. You can 
 Bridge to kubernetes is an amazing tool that allows developers debug and test their code by running their Microservice locally on their computer and having it connect to other microservices running in their kubernetes cluster. This way, they can test changes they make to their local microservice against the entire application already running on kubernetes. For more information about this, check out [this video](https://www.youtube.com/watch?v=yl14NJcUMGU).
 
 ## Deploy Updated Code using GitHub Action Workflow and the AKS Automated Deployment Feature
-You can follow the instructions in [this section of the demo repo](https://github.com/sabbour/contoso-names#create-a-github-actions-workflow) to do this.
+You can follow the instructions in [this section of the demo repo](https://github.com/sabbour/contoso-names#create-a-github-actions-workflow) to do this. This repo also has a workflow that automatically spellchecks and checks for broken links. Check out the .github/workflows folder for more details.
 
 ## Other AKS features that aid developer productivity
