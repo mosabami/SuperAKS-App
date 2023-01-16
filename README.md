@@ -124,7 +124,7 @@ az acr repository list --name $ACRNAME --resource-group $RGNAME
 ```
 
 ### Use the Draft tool to automatically create Kubernetes Manifest Files (Optional)
-Draft is a tool that makes it easy to develop resources required to deploy applications to kubernetes. This includes the creation of Docker files, Kubernetes manifest files, Helm charts, Kustomize files, GitHub Action pipelines, etc. In this section, we will be showcasing the use of Draft to crete Kubernetes manifest files to speed up the creation of resources required to deploy to kubernetes using the Developer Tools for Azure Kuberetes Service extension. You can also do this using the Draft CLI. 
+Draft is a tool that makes it easy to develop resources required to deploy applications to kubernetes. This includes the creation of Docker files, Kubernetes manifest files, Helm charts, Kustomize files, GitHub Action pipelines, etc. In this section, we will be showcasing the use of Draft to crete Kubernetes manifest files to speed up the creation of resources required to deploy to kubernetes using the Developer Tools for Azure Kuberetes Service extension. You can also do this using the Draft CLI. For more information about the features of this extension, check out [this video](https://microsofteur-my.sharepoint.com/personal/asabbour_microsoft_com/_layouts/15/stream.aspx?id=%2Fpersonal%2Fasabbour%5Fmicrosoft%5Fcom%2FDocuments%2FWork%2FFY23%20%2D%20PM%2FDevX%2FDevX%20Demo%2Emp4&ct=1673905797417&or=Teams-HL&ga=1) that walks you through it later if you are a Microsoft employee or check out the [demo repo](https://github.com/sabbour/contoso-names) otherwise. 
 > :warning: For the Draft and Developer Tools for AKS extension to work properly, you need to ensure your file path is not too long. Make sure you are working off a folder that doesn't have a long file path.
 1. Expand the fib-calculator folder
 1. Right click on the "worker" folder on the left side of the screen in your repo within vs-code. Hover over "Run AKS DevX Tool" then click on "AKS Developer: Draft a Kubernetes Deployment and Service
@@ -190,7 +190,7 @@ You should be able use the ip address as shown in the screenshot below
 ## Monitoring Scalability testing
 AKS makes it easy to monitor your applications using various tools including Prometeus, Grafana, and Azure monitor. In this workshop, we will be using container insights.
 
-We tested the app using a single user accessing it using the website. But how do we ensure our application will hold when there are hundreds or thousands of users using it at once? We will use Azure load testing (preview) using a jmeter test script to test this. We will see if our cluster scales and learn how easy it is to enable scaling. 
+We tested the app using a single user accessing it using the website. But how do we ensure our application will hold when there are hundreds or thousands of users using it at once? We will use Azure load testing (preview) using a jmeter test script to test this. We will see if our cluster scales and learn how easy it is to enable scaling. For more general information about this check out the [Scalability scenario on AKS-LZA](https://github.com/Azure/AKS-Landing-Zone-Accelerator/tree/main/Scenarios/Testing-Scalability)
 
 Open Azure portal in two tabs. In the first one, navigate to container insights to see the usage of your cluster. 
 AKS resource -> Insights (in the left blade under monitoring) -> "Containers" tab (the containers tab is found in the top middle of the page) -> Time range (which can be found at the top left no in the blade) -> last 30 minutes -> Apply
@@ -256,9 +256,9 @@ To allow more worker pods to be scheduled, we will enable Cluster Autosclaer. Cl
       --min-count 1 \
       --max-count 5
 	```
-Rerun the test again to see pods scheduled to help with the load but this time, let us increase the load. In the test run result screen click on "View all test runs" in the top right corner. Then click on "Configure" -> "Test", then head over to the "Parameters" tab. Update the **threads** to 50 and **loops** to 250. Click "Apply" at the bottom left. This will take you to your tests screen. Click on the test you just modified, and click "Run" at the top of the resulting page, then click "Run" to run the test. Click "Refresh" at the top left side of the screen then click on the run you just executed. 
+Rerun the test again to see pods scheduled to help with the load but this time, let us increase the load. In the test run result screen click on "View all test runs" in the top right corner. Then click on "Configure" -> "Test", then head over to the "Parameters" tab. Update the **threads** to 50 and **loops** to 250. Click "Apply" at the bottom left. This will take you to your tests screen. Click on the test you just modified, and click "Run" at the top of the resulting page, then click "Run" to run the test. Click "Refresh" at the top left side of the screen then click on the run you just executed.
 
-You will find that the test completed successfully. Entering kubectl get pods -n superapp after a minute will show pods in the pending state. Wait a couple of minutes and you will see a new node created. 
+You will find that the test completed successfully. Entering kubectl get pods -n superapp after a minute will show pods in the pending state. Wait a couple of minutes and you will see a new node created.
 ![Load testing parameters](./media/new-node-added.png)
 Check to see which pods are in the new node.
 ```bash
@@ -272,10 +272,9 @@ This exercise shows one of the advantages of containers and kubernetes. You can 
 
 
 ## Testing & Debuging individual microservices using Bridge to Kubernetes
-Code complete. Need to write instructions.
+Bridge to kubernetes is an amazing tool that allows developers debug and test their code by running their Microservice locally on their computer and having it connect to other microservices running in their kubernetes cluster. This way, they can test changes they make to their local microservice against the entire application already running on kubernetes. For more information about this, check out [this video](https://www.youtube.com/watch?v=yl14NJcUMGU). 
 
-## DevOps on AKS with GH Actions
-This section is coming soon
+## Create and Deploy Updated Code using GitHub Action Workflow and the AKS Automated Deployment Feature
+You can follow the instructions in [this section of the demo repo](https://github.com/sabbour/contoso-names#create-a-github-actions-workflow) to do this.
 
 ## Other AKS features that aid developer productivity
-This section is coming soon
