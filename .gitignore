@@ -44,8 +44,6 @@ node_modules/
 jspm_packages/
 AKS-Construction/
 k8s-Copy/
-.vscode/
-.vscode
 .vscode/task.json
 manifests/
 # TypeScript v1 declaration files

@@ -23,7 +23,7 @@ AKS has a lot of amazing features that makes software development and delivery v
 * GitHub Actions and the Draft tool for rapidly building CI/CD pipelines (coming soon)
 
 ## Prerequisites
-It is assumed you have basic knowledge of Containers, Kubernetes and Azure. You would also require Contributor and User Access Admin access to an Azure subscription and an AAD tenant where you have User Admin access. On your computer you will need to have git, [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install), [jq](https://stedolan.github.io/jq/download/), [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/), [sed](https://gnuwin32.sourceforge.net/packages/sed.htm) and the Azure CLI. Docker desktop would be required for some optional steps. All commands are designed to run on bash terminals.
+It is assumed you have basic knowledge of Containers, Kubernetes and Azure. You would also require Contributor and User Access Admin access to an Azure subscription and an AAD tenant where you have User Admin access. On your computer you will need to have git, [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install), [jq](https://stedolan.github.io/jq/download/), [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/), [sed](https://gnuwin32.sourceforge.net/packages/sed.htm) (optional) and the Azure CLI. Docker desktop would be required for some optional steps. All commands are designed to run on bash terminals.
 You will also require visual studio code with the following extensions installed for some optional steps: Azure Kubernetes Service, Azure tools, Bridge to Kubernetes, Developer Tools for Azure Kuberetes Service. You can install these by searching for them in the Extensions tab.
 
 ## Test the app on your computer (optional)
@@ -43,23 +43,13 @@ Here is what the architecture of the app looks like
 Now that we have seen the app running locally, it is time to deploy it to AKS. There are preview features being used including [workload identity](https://learn.microsoft.com/en-us/azure/aks/workload-identity-deploy-cluster#register-the-enableworkloadidentitypreview-feature-flag) and [CNI overlay](https://learn.microsoft.com/en-us/azure/aks/azure-cni-overlay#register-the-azureoverlaypreview-feature-flag). You will need to ensure these features are enabled in your subscription before proceeding with the deployment.
 
 ### Optional note (ignore this during workshop):
-You can also use AKSC deployment helper UI to make this deployment by clicking on [this link](https://azure.github.io/AKS-Construction/?net.networkPluginMode=true&net.vnetAksSubnetAddressPrefix=10.240.0.0%2F24&net.podCidr=10.244.0.0%2F16&addons.ingress=nginx&deploy.deployItemKey=deployArmCli&addons.workloadIdentity=true), but in this case because of the level of customization required and for easy automation, we will be using AKSC's underlying Bicep code. The differences between the deployment made by the link above and this customization we will be using are as follows:
-* CSI driver for keyvault addon will be enabled in your cluster using the automation script. You will have to enable that addon yourself using CLI command after creating the cluster if you use the UI option. 
-* We will be creating a keyvault using custom bicep code and we will also be creating a secret in the deployed keyvault (see kvRbac.bicep in IaC folder)
-* The workload identity addon will not be deployed by using the managed addon, we are using helm charts to install them instead (check workloadId.bicep)
+You can also use AKSC deployment helper UI to make this deployment by clicking on [this link](https://azure.github.io/AKS-Construction/?net.networkPluginMode=true&net.vnetAksSubnetAddressPrefix=10.240.0.0%2F24&net.podCidr=10.244.0.0%2F16&addons.ingress=nginx&deploy.deployItemKey=deployArmCli&addons.workloadIdentity=true), which will lead to some differences in the resources deployed. Do not use the helper UI on your first pass at this workshop.
 
-## About AKS Landing Zone Accelerator (AKS-LZA)
+### About AKS Landing Zone Accelerator (AKS-LZA)
 [AKS Construction (AKSC)](https://github.com/Azure/Aks-Construction#getting-started) is part of the [AKS landing zone accelerator](https://aka.ms/akslza/referenceimplementation) program and allows rapid development and deployment of secure AKS clusters and its supporting resources using IaC (mostly Bicep), Azure CLI and/or GitHub Actions. AKS Landing Zone Accelerator is a set of tools, resources and guidance that helps deploy and operationalize secure and scalable AKS and supporting services rapidly, AKS Construction helper being one of them. Check out the [official docs](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/aks/landing-zone-accelerator) for more information.
 > :warning: It is very important to note that the AKS-LZA can be used to develop secure and compliant AKS clusters that are (almost) ready for production. However, many of the best practice guidance are not used in this implementation to facilitate easy learning and deployment in this workshop. **Do not use this configuration for production workloads**. To deploy a more secure environment, consider reading the AKS-LZA docs and/or deploy your environment using a configuration [similar to this](https://azure.github.io/AKS-Construction/?preset=entScaleOps&entscale=online&cluster.AksPaidSkuForSLA=true&cluster.SystemPoolType=Standard&cluster.upgradeChannel=rapid&net.cniDynamicIpAllocation=true&net.maxPods=250&net.podCidr=10.240.100.0%2F24&net.bastion=true&net.azureFirewallsSku=Premium). 
 
 ## Deployment
-To begin, clone AKSC repo.
-
-```bash
-cd IaC
-git clone https://github.com/Azure/AKS-Construction
-```
-
 Get the signed in user id so that you can get admin access to the clusteryou create
 ```bash
 SIGNEDINUSER=$(az ad signed-in-user show --query id --out tsv)
@@ -139,8 +129,8 @@ Draft is a tool that makes it easy to develop resources required to deploy appli
 1. Expand the fib-calculator folder
 1. Right click on the "worker" folder on the left side of the screen in your repo within vs-code. Hover over "Run AKS DevX Tool" then click on "AKS Developer: Draft a Kubernetes Deployment and Service
     ![using the AKS DevX Tool](./media/create-manifests-draft.png)
-1. Choose the folder you want your manifest files to be saved. In this case we will choose the fib-calculator folder which in which the worker folder is
-1. CLick on "Manifests" in the resulting prompt
+1. Choose the folder you want your manifest files to be saved in. In this case we will choose the fib-calculator folder which in which the worker folder is
+1. Click on "Manifests" in the resulting prompt
 1. Enter the application name, in this case it will be "superapp-worker" and hit enter
 1. Enter port "5000" and hit enter
 1. Choose the superapp namespace. This tool has used other extensions to connect to the k8s cluster and identify the available namespaces
@@ -156,7 +146,8 @@ AKS DevX tool will automatically create a draft of deployment and service manife
 ### Deploy required resources
 
 Change the deployment files to use the proper container registry names using sed commands. 
-> :warning: If you are using a mac you will need to change the command to `sed -i '' "s/<ACR name>/$ACRNAME/" client-deployment.yaml`. If this doesnt work, you willneed to update the files manually.
+> :warning: If you are using a mac you will need to change the command to `sed -i '' "s/<ACR name>/$ACRNAME/" client-deployment.yaml`. 
+> :bulb: If these sed commands dont work for any reason or if you don't have sed installed, you will need to update these files manually by replacing the placeholders in the files mentioned below.
 ```bash
 cd ../k8s
 sed -i  "s/<ACR name>/$ACRNAME/" client-deployment.yaml
