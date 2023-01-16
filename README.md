@@ -46,7 +46,7 @@ Here is what the architecture of the app looks like
 * The API server receives requests from the front end and updates the database with the requested information. It stores a placeholder as the value of the index requested by the front end and stores it in redis
 * The worker listens to redis and whenever there is a new entry by the API server, it takes the index, calculates the fibonacci number and replaces the placeholder by the correct value. It can also be accessed directly just for the purpose of testing the bridge to kubernetes feature.
 * Redis microservice runs a redis instance and has a persistent volume claim when deployed to Azure
-* Postgress microservice runs a postgres instance that is currently not persisted. To be replaced by a Azure postgres database in the future
+* Postgres microservice runs a postgres instance that is currently not persisted. To be replaced by a Azure postgres database in the future
 
 ## About the infrastructure
 Now that we have seen the app running locally, it is time to deploy it to AKS. There are preview features being used including [workload identity](https://learn.microsoft.com/en-us/azure/aks/workload-identity-deploy-cluster#register-the-enableworkloadidentitypreview-feature-flag) and [CNI overlay](https://learn.microsoft.com/en-us/azure/aks/azure-cni-overlay#register-the-azureoverlaypreview-feature-flag). You will need to ensure these features are enabled in your subscription before proceeding with the deployment.
