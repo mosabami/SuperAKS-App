@@ -14,17 +14,19 @@ AKS has a lot of amazing features that makes software development and delivery v
 * Azure Key vault integration and the CSI driver for easy secrets management
 * AKS persistent volume & persistent volume claim provisioning Azure file resources dynamically
 * Bridge to Kubernetes which allows you to test & debug individual microservices against other services already running on AKS
+* Developer tools for AKS and the Draft tool to automatically create Kubernetes manifest files
+* Automated Deployments feature on AKS to automatically create GitHub Action pipelines and provide federated identity to the repo so that it can be used to deploy changes to AKS
 * Azure container registry integration for storage in a High availability registry as well as image security
 * AKS workload identity (preview) which makes it easy to assign identities to individual pods in your cluster for better security. It can be integrated with various identity providers 
-* AKS CNI overlay (preview) so you dont have to worry about pod IP exhaustion
+* AKS CNI overlay (preview) so you don't have to worry about pod IP exhaustion
 * Horizontal pod autoscaler
 * Cluster autoscaler for easy and quick scaling of your application
-* Azure load testing (preview) to test scability of your application
+* Azure load testing (preview) to test scalability of your application
 * GitHub Actions and the Draft tool for rapidly building CI/CD pipelines (coming soon)
 
 ## Prerequisites
 It is assumed you have basic knowledge of Containers, Kubernetes and Azure. You would also require Contributor and User Access Admin access to an Azure subscription and an AAD tenant where you have User Admin access. On your computer you will need to have git, [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install), [jq](https://stedolan.github.io/jq/download/), [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/), [sed](https://gnuwin32.sourceforge.net/packages/sed.htm) (optional) and the Azure CLI. Docker desktop would be required for some optional steps. All commands are designed to run on bash terminals.
-You will also require visual studio code with the following extensions installed for some optional steps: Azure Kubernetes Service, Azure tools, Bridge to Kubernetes, Developer Tools for Azure Kuberetes Service. You can install these by searching for them in the Extensions tab.
+You will also require visual studio code with the following extensions installed for some optional steps: Azure Kubernetes Service, Azure tools, Bridge to Kubernetes, Developer Tools for Azure Kubernetes Service. You can install these by searching for them in the Extensions tab.
 
 ## Test the app on your computer (optional)
 If you have docker desktop install on your computer and you have some experience with docker-compose you can run the application on your local computer. 
@@ -50,7 +52,7 @@ You can also use AKSC deployment helper UI to make this deployment by clicking o
 > :warning: It is very important to note that the AKS-LZA can be used to develop secure and compliant AKS clusters that are (almost) ready for production. However, many of the best practice guidance are not used in this implementation to facilitate easy learning and deployment in this workshop. **Do not use this configuration for production workloads**. To deploy a more secure environment, consider reading the AKS-LZA docs and/or deploy your environment using a configuration [similar to this](https://azure.github.io/AKS-Construction/?preset=entScaleOps&entscale=online&cluster.AksPaidSkuForSLA=true&cluster.SystemPoolType=Standard&cluster.upgradeChannel=rapid&net.cniDynamicIpAllocation=true&net.maxPods=250&net.podCidr=10.240.100.0%2F24&net.bastion=true&net.azureFirewallsSku=Premium). 
 
 ## Deployment
-Get the signed in user id so that you can get admin access to the clusteryou create
+Get the signed in user id so that you can get admin access to the cluster you create
 ```bash
 SIGNEDINUSER=$(az ad signed-in-user show --query id --out tsv)
 RGNAME=superapp
@@ -93,7 +95,7 @@ cd ..
 ```
 
 ## Building the images
-We will build images from source code and pull database images from dockerhub. We will store these images in our container registry to stay in compliance with our policy to only use images in approved registry
+We will build images from source code and pull database images from Dockerhub. We will store these images in our container registry to stay in compliance with our policy to only use images in approved registry
 
 Build front end image
 ```bash
@@ -112,7 +114,7 @@ Build fib calculator image
 cd ../worker
 az acr build -t worker:v1 -r $ACRNAME --resource-group $RGNAME .
 ```
-Import redis and postgres images from dockerhub
+Import redis and postgres images from Dockerhub
 ```bash
 az acr import --name $ACRNAME --source docker.io/library/redis:latest --resource-group $RGNAME
 az acr import --name $ACRNAME  --source docker.io/library/postgres:latest --resource-group $RGNAME
@@ -124,7 +126,7 @@ az acr repository list --name $ACRNAME --resource-group $RGNAME
 ```
 
 ### Use the Draft tool to automatically create Kubernetes Manifest Files (Optional)
-Draft is a tool that makes it easy to develop resources required to deploy applications to kubernetes. This includes the creation of Docker files, Kubernetes manifest files, Helm charts, Kustomize files, GitHub Action pipelines, etc. In this section, we will be showcasing the use of Draft to crete Kubernetes manifest files to speed up the creation of resources required to deploy to kubernetes using the Developer Tools for Azure Kuberetes Service extension. You can also do this using the Draft CLI. 
+Draft is a tool that makes it easy to develop resources required to deploy applications to kubernetes. This includes the creation of Docker files, Kubernetes manifest files, Helm charts, Kustomize files, GitHub Action pipelines, etc. In this section, we will be showcasing the use of Draft to crete Kubernetes manifest files to speed up the creation of resources required to deploy to kubernetes using the Developer Tools for Azure Kubernetes Service extension. You can also do this using the Draft CLI. For more information about the features of this extension, check out [this video](https://microsofteur-my.sharepoint.com/personal/asabbour_microsoft_com/_layouts/15/stream.aspx?id=%2Fpersonal%2Fasabbour%5Fmicrosoft%5Fcom%2FDocuments%2FWork%2FFY23%20%2D%20PM%2FDevX%2FDevX%20Demo%2Emp4&ct=1673905797417&or=Teams-HL&ga=1) that walks you through it later if you are a Microsoft employee or check out the [demo repo](https://github.com/sabbour/contoso-names) otherwise. 
 > :warning: For the Draft and Developer Tools for AKS extension to work properly, you need to ensure your file path is not too long. Make sure you are working off a folder that doesn't have a long file path.
 1. Expand the fib-calculator folder
 1. Right click on the "worker" folder on the left side of the screen in your repo within vs-code. Hover over "Run AKS DevX Tool" then click on "AKS Developer: Draft a Kubernetes Deployment and Service
@@ -141,13 +143,13 @@ Draft is a tool that makes it easy to develop resources required to deploy appli
 1. Select your worker registry
 1. Select the v1 tag
 
-AKS DevX tool will automatically create a draft of deployment and service manifest files ready for you to modify to suit your needs within the manifests folder in the folder you selected as your output folder. These files can then be updated to include required environment vaiables, specify resources and limits, proper labeling for deployment and service selectors, etc. For the rest of this workshop however we will use the manifest files already provided in the k8s folder in the fib-calculator folder.
+AKS DevX tool will automatically create a draft of deployment and service manifest files ready for you to modify to suit your needs within the manifests folder in the folder you selected as your output folder. These files can then be updated to include required environment variables, specify resources and limits, proper labeling for deployment and service selectors, etc. For the rest of this workshop however we will use the manifest files already provided in the k8s folder in the fib-calculator folder.
 
 ### Deploy required resources
 
 Change the deployment files to use the proper container registry names using sed commands. 
 > :warning: If you are using a mac you will need to change the command to `sed -i '' "s/<ACR name>/$ACRNAME/" client-deployment.yaml`. 
-> :bulb: If these sed commands dont work for any reason or if you don't have sed installed, you will need to update these files manually by replacing the placeholders in the files mentioned below.
+> :bulb: If these sed commands don't work for any reason or if you don't have sed installed, you will need to update these files manually by replacing the placeholders in the files mentioned below.
 ```bash
 cd ../k8s
 sed -i  "s/<ACR name>/$ACRNAME/" client-deployment.yaml
@@ -188,15 +190,15 @@ You should be able use the ip address as shown in the screenshot below
 ![App running on AKS](./media/running-on-aks.png)
 
 ## Monitoring Scalability testing
-AKS makes it easy to monitor your applications using various tools including Prometeus, Grafana, and Azure monitor. In this workshop, we will be using container insights.
+AKS makes it easy to monitor your applications using various tools including Prometheus, Grafana, and Azure monitor. In this workshop, we will be using container insights.
 
-We tested the app using a single user accessing it using the website. But how do we ensure our application will hold when there are hundreds or thousands of users using it at once? We will use Azure load testing (preview) using a jmeter test script to test this. We will see if our cluster scales and learn how easy it is to enable scaling. 
+We tested the app using a single user accessing it using the website. But how do we ensure our application will hold when there are hundreds or thousands of users using it at once? We will use Azure load testing (preview) using a JMeter test script to test this. We will see if our cluster scales and learn how easy it is to enable scaling. For more general information about this check out the [Scalability scenario on AKS-LZA](https://github.com/Azure/AKS-Landing-Zone-Accelerator/tree/main/Scenarios/Testing-Scalability)
 
 Open Azure portal in two tabs. In the first one, navigate to container insights to see the usage of your cluster. 
 AKS resource -> Insights (in the left blade under monitoring) -> "Containers" tab (the containers tab is found in the top middle of the page) -> Time range (which can be found at the top left no in the blade) -> last 30 minutes -> Apply
 
 Here you should be able to see the usage of the pods over the last 30 minutes. 
-Filter to only show pods in your nodepool. "Add filter" -> Namespace -> superapp
+Filter to only show pods in your node pool. "Add filter" -> Namespace -> superapp
 
 1. On the second Azure portal tab, create a new Azure load testing resource within the same resource group as your AKS cluster. 
 1. Click on "Go to resource" and click "Create" under Upload a JMeter script
@@ -222,7 +224,7 @@ cd loadtesting
 kubectl apply -f worker-hpa.yaml
 kubectl get pods -n superapp -w
 ```
-Head back to the loat test tab and rerun the test by clicking on the "Rerun" button in the results page. 
+Head back to the load test tab and rerun the test by clicking on the "Rerun" button in the results page.
 After a minute or so, after the test is completed, you will find that some new pods have been created but many of them are sitting in pending state
 ```bash
 kubectl get pods -n superapp 
@@ -230,12 +232,12 @@ kubectl get pods -n superapp
 ![worker pods in pending](./media/pods-in-pending.png)
 Heading over to Azure monitor will show that the worker pods that were able to be scheduled are all fully utilized
 ![worker pods utilized](./media/scheduled-pods-full-utilized.png)
-And this is happening inspite of the fact that the node itself is not fully utilized as showed in the nodes tab
+And this is happening in spite of the fact that the node itself is not fully utilized as showed in the nodes tab
 ![node not fully utilized](./media/node-not-fully-utilized.png)
-This is happening because the total requests of all the scheduled pods has reached the available cpu availabe in the node even though the requested CPUs are not being fully utilized by all the pods in the node. To avoid this, set your requests numbers in your deployment manifest files to a lower number. For the sake of this demo however, we will leave it as is.
+This is happening because the total requests of all the scheduled pods has reached the available cpu available in the node even though the requested CPUs are not being fully utilized by all the pods in the node. To avoid this, set your requests numbers in your deployment manifest files to a lower number. For the sake of this demo however, we will leave it as is.
 
 ### Adding scalability to your cluster with Cluster Autoscaler
-To allow more worker pods to be scheduled, we will enable Cluster Autosclaer. Cluster autoscaler is an AKS feature that allows the k8s control plane create new nodes and add them to the cluster nodepool so that your application can scale automatically without having to worry about that. Run the command below the enable cluster autoscaler. You can also enable it at the time of cluster creation or by updating the bicep deployment scripts and rerunning it.
+To allow more worker pods to be scheduled, we will enable Cluster Autoscaler. Cluster autoscaler is an AKS feature that allows the k8s control plane create new nodes and add them to the cluster node pool so that your application can scale automatically without having to worry about that. Run the command below the enable cluster autoscaler. You can also enable it at the time of cluster creation or by updating the bicep deployment scripts and rerunning it.
 
 1. Run the following command to change the default cluster autoscaler profile (default values can be found in the AKS Cluster REST API documentation). These parameters enable a rather aggressive scale-down to avoid longer waiting times in this tutorial. Please be mindful when setting these values in your own cluster.
     ```azurecli
@@ -256,26 +258,25 @@ To allow more worker pods to be scheduled, we will enable Cluster Autosclaer. Cl
       --min-count 1 \
       --max-count 5
 	```
-Rerun the test again to see pods scheduled to help with the load but this time, let us increase the load. In the test run result screen click on "View all test runs" in the top right corner. Then click on "Configure" -> "Test", then head over to the "Parameters" tab. Update the **threads** to 50 and **loops** to 250. Click "Apply" at the bottom left. This will take you to your tests screen. Click on the test you just modified, and click "Run" at the top of the resulting page, then click "Run" to run the test. Click "Refresh" at the top left side of the screen then click on the run you just executed. 
+Rerun the test again to see pods scheduled to help with the load but this time, let us increase the load. In the test run result screen click on "View all test runs" in the top right corner. Then click on "Configure" -> "Test", then head over to the "Parameters" tab. Update the **threads** to 50 and **loops** to 250. Click "Apply" at the bottom left. This will take you to your tests screen. Click on the test you just modified, and click "Run" at the top of the resulting page, then click "Run" to run the test. Click "Refresh" at the top left side of the screen then click on the run you just executed.
 
-You will find that the test completed successfully. Entering kubectl get pods -n superapp after a minute will show pods in the pending state. Wait a couple of minutes and you will see a new node created. 
+You will find that the test completed successfully. Entering kubectl get pods -n superapp after a minute will show pods in the pending state. Wait a couple of minutes and you will see a new node created.
 ![Load testing parameters](./media/new-node-added.png)
 Check to see which pods are in the new node.
 ```bash
 kubectl get pods -n superapp -o wide
 ```
-![Pods schedued in the new node](./media/nodes-pods-scheduled-to.png)
-After a couple of minutes, heading over to the "Nodes" tab of Azure monitor shows the new node and its utilizatoin.
+![Pods scheduled in the new node](./media/nodes-pods-scheduled-to.png)
+After a couple of minutes, heading over to the "Nodes" tab of Azure monitor shows the new node and its utilization.
 Lets test it again but this time with threads set to 300 and loops set to 450. You can also update the loadtesting/worker-hpa.yaml and server-hpa.yaml files to increase the `maxReplicas` numbers.
 
 This exercise shows one of the advantages of containers and kubernetes. You can optimize the utilization of your nodes (virtual machines) and scale various components of your application independently to increase and decrease based on the demand on that particular service. With AKS CNI overlay, you don't have to worry about IP exhaustion. The overlay network takes care of that for you. You can have max 250 pods in each node with CNI overlay and those IP addresses will be from a different IP space than your node (and virtual network).
 
 
-## Testing & Debuging individual microservices using Bridge to Kubernetes
-Code complete. Need to write instructions.
+## Testing & Debugging individual microservices using Bridge to Kubernetes
+Bridge to kubernetes is an amazing tool that allows developers debug and test their code by running their Microservice locally on their computer and having it connect to other microservices running in their kubernetes cluster. This way, they can test changes they make to their local microservice against the entire application already running on kubernetes. For more information about this, check out [this video](https://www.youtube.com/watch?v=yl14NJcUMGU).
 
-## DevOps on AKS with GH Actions
-This section is coming soon
+## Deploy Updated Code using GitHub Action Workflow and the AKS Automated Deployment Feature
+You can follow the instructions in [this section of the demo repo](https://github.com/sabbour/contoso-names#create-a-github-actions-workflow) to do this.
 
 ## Other AKS features that aid developer productivity
-This section is coming soon
