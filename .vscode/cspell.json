@@ -96,6 +96,7 @@
         "!yml",
         "!yaml",
         "!json",
+        "!js",
         "js",
         "jsx"
     ]
