@@ -47,7 +47,7 @@ k8s-Copy/
 .vscode/
 .vscode
 .vscode/task.json
-
+manifests/
 # TypeScript v1 declaration files
 typings/
 

@@ -1,17 +1,19 @@
 # SuperAKS-App
-In this repo, you will learn about some of the various AKS features that make it easier for developers to deploy that code without having to worry too much about infrastructure. Begin by cloning the repository.
+In this repo, you will learn about some of the AKS features that make it easier for developers to deploy that code without having to worry too much about infrastructure. Begin by cloning the repository.
+> :warning: You will need to fork this repo and clone your fork in order to complete the steps requiring updating the GitHub(GH) repository and using GH Actions for deployment. I recommend you do this and clone **your** repo instead of the repo used in the command below.
+
 ```bash
 git clone https://github.com/mosabami/AKS-Superapp
 ```
-In this workshop, you are a developer who created an app that calculates fibonacci number of indexes. You have written the code and would love to deploy it online. You have chosen to deploy it to a k8s cluster. You have heard Azure and AKS is the best place for kubernetes. You decide to try it out yourself.
+In this workshop, you are a developer who created an app that calculates fibonacci number of indexes. You have written the code and would love to deploy it online. You have chosen to deploy it to a k8s cluster. You have heard AKS is the best place for kubernetes. You decide to try it out yourself.
 
 AKS has a lot of amazing features that makes software development and delivery very easy. It takes care of a lot of the infrastructure security related heavy lifting for you. In this workshop we will discuss the following features of AKS:
 * Bicep IaC to make it easier and quicker to deploy AKS and its supporting resources in a reproducible way
 * Azure AD for authentication so you don't have to manage that yourself
-* Azure RBAC integration with AKS
+* Azure RBAC integration with AKS for authorization
 * Azure Key vault integration and the CSI driver for easy secrets management
 * AKS persistent volume & persistent volume claim provisioning Azure file resources dynamically
-* Bridge to Kubernetes which allows you to test & debug individual microservices against other services running on AKS
+* Bridge to Kubernetes which allows you to test & debug individual microservices against other services already running on AKS
 * Azure container registry integration for storage in a High availability registry as well as image security
 * AKS workload identity (preview) which makes it easy to assign identities to individual pods in your cluster for better security. It can be integrated with various identity providers 
 * AKS CNI overlay (preview) so you dont have to worry about pod IP exhaustion
@@ -46,7 +48,9 @@ You can also use AKSC deployment helper UI to make this deployment by clicking o
 * We will be creating a keyvault using custom bicep code and we will also be creating a secret in the deployed keyvault (see kvRbac.bicep in IaC folder)
 * The workload identity addon will not be deployed by using the managed addon, we are using helm charts to install them instead (check workloadId.bicep)
 
-[AKS Construction (AKSC)](https://github.com/Azure/Aks-Construction#getting-started) is part of the [AKS landing zone accelerator](https://aka.ms/akslza/referenceimplementation) program and allows rapid development and deployment of secure AKS clusters and its supporting resources using IaC (mostly Bicep), Azure CLI and/or GitHub Actions.
+## About AKS Landing Zone Accelerator (AKS-LZA)
+[AKS Construction (AKSC)](https://github.com/Azure/Aks-Construction#getting-started) is part of the [AKS landing zone accelerator](https://aka.ms/akslza/referenceimplementation) program and allows rapid development and deployment of secure AKS clusters and its supporting resources using IaC (mostly Bicep), Azure CLI and/or GitHub Actions. AKS Landing Zone Accelerator is a set of tools, resources and guidance that helps deploy and operationalize secure and scalable AKS and supporting services rapidly, AKS Construction helper being one of them. Check out the [official docs](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/aks/landing-zone-accelerator) for more information.
+> :warning: It is very important to note that the AKS-LZA can be used to develop secure and compliant AKS clusters that are (almost) ready for production. However, many of the best practice guidance are not used in this implementation to facilitate easy learning and deployment in this workshop. **Do not use this configuration for production workloads**. To deploy a more secure environment, consider reading the AKS-LZA docs and/or deploy your environment using a configuration [similar to this](https://azure.github.io/AKS-Construction/?preset=entScaleOps&entscale=online&cluster.AksPaidSkuForSLA=true&cluster.SystemPoolType=Standard&cluster.upgradeChannel=rapid&net.cniDynamicIpAllocation=true&net.maxPods=250&net.podCidr=10.240.100.0%2F24&net.bastion=true&net.azureFirewallsSku=Premium). 
 
 ## Deployment
 To begin, clone AKSC repo.
@@ -67,7 +71,7 @@ Create deployment
 az group create -n $RGNAME -l EastUs
 DEP=$(az deployment group create -g $RGNAME  --parameters signedinuser=$SIGNEDINUSER  -f main.bicep -o json)
 ```
-Note: DEP variable is very important and will be used in subsequent steps. You can save it by running `echo $DEP > test.json` and restore it by running `export DEP=$(cat test.json)`
+> :bulb: The DEP variable is very important and will be used in subsequent steps. You can save it by running `echo $DEP > test.json` and restore it by running `export DEP=$(cat test.json)`
 
 Get required variables
 ```bash
@@ -88,13 +92,18 @@ curl -sL https://github.com/Azure/AKS-Construction/releases/download/0.9.6/postd
 	-p ingress=nginx
 ```
 
+Create the superapp namespace that will be required for future steps
+```bash
+kubectl create namespace superapp 
+```
+
 cd out of IaC folder
 ```bash
 cd ..
 ```
 
 ## Building the images
-We will build images from source code and pull database images from dockerhub. WE will store these images in our container registry to stay in compliance with our policy to only use images in approved registry
+We will build images from source code and pull database images from dockerhub. We will store these images in our container registry to stay in compliance with our policy to only use images in approved registry
 
 Build front end image
 ```bash
@@ -124,9 +133,30 @@ Verify that the 5 required images are in the container registry
 az acr repository list --name $ACRNAME --resource-group $RGNAME
 ```
 
+### Use the Draft tool to automatically create Kubernetes Manifest Files (Optional)
+Draft is a tool that makes it easy to develop resources required to deploy applications to kubernetes. This includes the creation of Docker files, Kubernetes manifest files, Helm charts, Kustomize files, GitHub Action pipelines, etc. In this section, we will be showcasing the use of Draft to crete Kubernetes manifest files to speed up the creation of resources required to deploy to kubernetes using the Developer Tools for Azure Kuberetes Service extension. You can also do this using the Draft CLI. 
+> :warning: For the Draft and Developer Tools for AKS extension to work properly, you need to ensure your file path is not too long. Make sure you are working off a folder that doesn't have a long file path.
+1. Expand the fib-calculator folder
+1. Right click on the "worker" folder on the left side of the screen in your repo within vs-code. Hover over "Run AKS DevX Tool" then click on "AKS Developer: Draft a Kubernetes Deployment and Service
+    ![using the AKS DevX Tool](./media/create-manifests-draft.png)
+1. Choose the folder you want your manifest files to be saved. In this case we will choose the fib-calculator folder which in which the worker folder is
+1. CLick on "Manifests" in the resulting prompt
+1. Enter the application name, in this case it will be "superapp-worker" and hit enter
+1. Enter port "5000" and hit enter
+1. Choose the superapp namespace. This tool has used other extensions to connect to the k8s cluster and identify the available namespaces
+1. Choose Azure Container Registry 
+1. Choose your Subscription where your cACR subscription is
+1. Choose the Resource Group where your ACR resides
+1. Choose your ACR
+1. Select your worker registry
+1. Select the v1 tag
+
+AKS DevX tool will automatically create a draft of deployment and service manifest files ready for you to modify to suit your needs within the manifests folder in the folder you selected as your output folder. These files can then be updated to include required environment vaiables, specify resources and limits, proper labeling for deployment and service selectors, etc. For the rest of this workshop however we will use the manifest files already provided in the k8s folder in the fib-calculator folder.
+
 ### Deploy required resources
 
-Change the change the deployment files to use the proper container registry names using sed commands. Please note, if you are using a mac you will need to change the command to `sed -i '' "s/<ACR name>/$ACRNAME/" client-deployment.yaml`. If this doesnt work, you willneed to update the files manually.
+Change the deployment files to use the proper container registry names using sed commands. 
+> :warning: If you are using a mac you will need to change the command to `sed -i '' "s/<ACR name>/$ACRNAME/" client-deployment.yaml`. If this doesnt work, you willneed to update the files manually.
 ```bash
 cd ../k8s
 sed -i  "s/<ACR name>/$ACRNAME/" client-deployment.yaml
@@ -150,10 +180,9 @@ sed -i  "s/<tenant ID>/$TENANTID/" svc-accounts.yaml
 
 Deploy the resources into the superapp namespace.
 ```bash
-kubectl create namespace superapp 
 kubectl apply -f .
 ```
-Note: Depending on the order in which the manifest files are deployed, some pods may not connect and so you might have to redeploy by deleting the deployment and reapplying.
+> :warning: Depending on the order in which the manifest files are deployed, some pods may not connect and so you might have to redeploy by deleting the deployment and reapplying.
 
 So what have we done here? We are using workload identities. Workload identities is a soon to be released AKS feature that allows you to use any of various identity providers as the identity of your pod. In this case we are using Azure AD as the identity provider and using the AKS cluster as the OIDC issuer. You can use other identity providers as well. This identity will only be assigned to the pods that are using the service account attached to the identity. This way other pods within the same node wont have the same access. This is important for securing your workloads by providing minimum access. In this case, we are using the identity to get access to the Azure Keyvault. Only this identity and consequently the pods configured to use the identity will be able to pull secrets from it and get the postgres database password. Check out the postgres and server deployment yaml files as well as the svc accounts and secret provider class yaml files for more details.
 
