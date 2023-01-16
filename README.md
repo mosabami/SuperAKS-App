@@ -21,7 +21,8 @@ AKS has a lot of amazing features that makes software development and delivery v
 * GitHub Actions and the Draft tool for rapidly building CI/CD pipelines (coming soon)
 
 ## Prerequisites
-It is assumed you have basic knowledge of Containers, Kubernetes and Azure. You would also require Contributor and User Access Admin access to an Azure subscription and an AAD tenant where you have User Admin access. On your computer you will need to have [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install), [jq](https://stedolan.github.io/jq/download/) and some other packages installed. Docker desktop would be required for some optional steps.
+It is assumed you have basic knowledge of Containers, Kubernetes and Azure. You would also require Contributor and User Access Admin access to an Azure subscription and an AAD tenant where you have User Admin access. On your computer you will need to have git, [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install), [jq](https://stedolan.github.io/jq/download/), [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/), [sed](https://gnuwin32.sourceforge.net/packages/sed.htm) and the Azure CLI. Docker desktop would be required for some optional steps. All commands are designed to run on bash terminals.
+You will also require visual studio code with the following extensions installed for some optional steps: Azure Kubernetes Service, Azure tools, Bridge to Kubernetes, Developer Tools for Azure Kuberetes Service. You can install these by searching for them in the Extensions tab.
 
 ## Test the app on your computer (optional)
 If you have docker desktop install on your computer and you have some experience with docker-compose you can run the application on your local computer. 
