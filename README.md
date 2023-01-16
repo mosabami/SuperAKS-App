@@ -33,7 +33,8 @@ It is assumed you have basic knowledge of Containers, Kubernetes and Azure. You 
 * [jq](https://stedolan.github.io/jq/download/), 
 * [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/),
 * [sed](https://gnuwin32.sourceforge.net/packages/sed.htm) (optional)   
-* Azure CLI. 
+* Azure CLI
+
 Docker desktop would be required for some optional steps. All commands are designed to run on bash terminals.
 You will also require visual studio code with the following extensions installed for some **optional** steps: 
 * Azure Kubernetes Service
@@ -62,9 +63,6 @@ Here is what the architecture of the app looks like
 
 ## About the infrastructure
 Now that we have seen the app running locally, it is time to deploy it to AKS. There are preview features being used including [workload identity](https://learn.microsoft.com/en-us/azure/aks/workload-identity-deploy-cluster#register-the-enableworkloadidentitypreview-feature-flag) and [CNI overlay](https://learn.microsoft.com/en-us/azure/aks/azure-cni-overlay#register-the-azureoverlaypreview-feature-flag). You will need to ensure these features are enabled in your subscription before proceeding with the deployment.
-
-### Optional note (ignore this during workshop):
-You can also use AKSC deployment helper UI to make this deployment by clicking on [this link](https://azure.github.io/AKS-Construction/?net.networkPluginMode=true&net.vnetAksSubnetAddressPrefix=10.240.0.0%2F24&net.podCidr=10.244.0.0%2F16&addons.ingress=nginx&deploy.deployItemKey=deployArmCli&addons.workloadIdentity=true), which will lead to some differences in the resources deployed. Do not use the helper UI on your first pass at this workshop.
 
 ### About AKS Landing Zone Accelerator (AKS-LZA)
 [AKS Construction (AKSC)](https://github.com/Azure/Aks-Construction#getting-started) is part of the [AKS landing zone accelerator](https://aka.ms/akslza/referenceimplementation) program and allows rapid development and deployment of secure AKS clusters and its supporting resources using IaC (mostly Bicep), Azure CLI and/or GitHub Actions. AKS Landing Zone Accelerator is a set of tools, resources and guidance that helps deploy and operationalize secure and scalable AKS and supporting services rapidly, AKS Construction helper being one of them. Check out the [official docs](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/aks/landing-zone-accelerator) for more information.
