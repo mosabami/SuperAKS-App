@@ -27,8 +27,20 @@ AKS has a lot of amazing features that makes software development and delivery v
 If there are other AKS features you'd like to see here that help with developer productivity, please create an issue. PRs are also welcome!
 
 ## Prerequisites
-It is assumed you have basic knowledge of Containers, Kubernetes and Azure. You would also require Contributor and User Access Admin access to an Azure subscription and an AAD tenant where you have User Admin access. On your computer you will need to have git, [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install), [jq](https://stedolan.github.io/jq/download/), [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/), [sed](https://gnuwin32.sourceforge.net/packages/sed.htm) (optional) and the Azure CLI. Docker desktop would be required for some optional steps. All commands are designed to run on bash terminals.
-You will also require visual studio code with the following extensions installed for some optional steps: Azure Kubernetes Service, Azure tools, Bridge to Kubernetes, Developer Tools for Azure Kubernetes Service. You can install these by searching for them in the Extensions tab.
+It is assumed you have basic knowledge of Containers, Kubernetes and Azure. You would also require Contributor and User Access Admin access to an Azure subscription and an AAD tenant where you have User Admin access. On your computer you will need to have the following installed
+* git, 
+* [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install),
+* [jq](https://stedolan.github.io/jq/download/), 
+* [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/),
+* [sed](https://gnuwin32.sourceforge.net/packages/sed.htm) (optional)   
+* Azure CLI. 
+Docker desktop would be required for some optional steps. All commands are designed to run on bash terminals.
+You will also require visual studio code with the following extensions installed for some **optional** steps: 
+* Azure Kubernetes Service
+* Azure tools
+* Bridge to Kubernetes
+* Developer Tools for Azure Kubernetes Service. 
+You can install these by searching for them in the Extensions tab.
 
 ## Test the app on your computer (optional)
 If you have docker desktop install on your computer and you have some experience with docker-compose you can run the application on your local computer. 
@@ -284,6 +296,6 @@ This exercise shows one of the advantages of containers and kubernetes. You can 
 Bridge to kubernetes is an amazing tool that allows developers debug and test their code by running their Microservice locally on their computer and having it connect to other microservices running in their kubernetes cluster. This way, they can test changes they make to their local microservice against the entire application already running on kubernetes. For more information about this, check out [this video](https://www.youtube.com/watch?v=yl14NJcUMGU).
 
 ## Deploy Updated Code using GitHub Action Workflow and the AKS Automated Deployment Feature
-You can follow the instructions in [this section of the demo repo](https://github.com/sabbour/contoso-names#create-a-github-actions-workflow) to do this.
+You can follow the instructions in [this section of the demo repo](https://github.com/sabbour/contoso-names#create-a-github-actions-workflow) to do this. This repo also has a workflow that automatically spellchecks and checks for broken links. Check out the .github/workflows folder for more details.
 
 ## Other AKS features that aid developer productivity
