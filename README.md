@@ -14,6 +14,8 @@ AKS has a lot of amazing features that makes software development and delivery v
 * Azure Key vault integration and the CSI driver for easy secrets management
 * AKS persistent volume & persistent volume claim provisioning Azure file resources dynamically
 * Bridge to Kubernetes which allows you to test & debug individual microservices against other services already running on AKS
+* Developer tools for AKS and the Draft tool to automatically create Kubernetes manifest files
+* Automated Deployments feature on AKS to automatically create GitHub Action pipelines and provide federated identity to the repo so that it can be used to deploy changes to AKS
 * Azure container registry integration for storage in a High availability registry as well as image security
 * AKS workload identity (preview) which makes it easy to assign identities to individual pods in your cluster for better security. It can be integrated with various identity providers 
 * AKS CNI overlay (preview) so you dont have to worry about pod IP exhaustion
@@ -274,7 +276,7 @@ This exercise shows one of the advantages of containers and kubernetes. You can 
 ## Testing & Debuging individual microservices using Bridge to Kubernetes
 Bridge to kubernetes is an amazing tool that allows developers debug and test their code by running their Microservice locally on their computer and having it connect to other microservices running in their kubernetes cluster. This way, they can test changes they make to their local microservice against the entire application already running on kubernetes. For more information about this, check out [this video](https://www.youtube.com/watch?v=yl14NJcUMGU). 
 
-## Create and Deploy Updated Code using GitHub Action Workflow and the AKS Automated Deployment Feature
+## Deploy Updated Code using GitHub Action Workflow and the AKS Automated Deployment Feature
 You can follow the instructions in [this section of the demo repo](https://github.com/sabbour/contoso-names#create-a-github-actions-workflow) to do this.
 
 ## Other AKS features that aid developer productivity
