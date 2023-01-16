@@ -79,15 +79,23 @@
         "walkthrough",
         "whatismypublicip",
         "Xamarin",
-        "xattr"
+        "xattr",
+        "AKSC",
+        "operationalize",
+        "superapp",
+        "Dockerhub",
+        "Kustomize",
+        "OIDC",
+        "JMeter"
     ],
-    "ignoreWords": [],
+    "ignoreWords": ["ACRNAME","workloadid","kvrbac","loadtesting"],
     "import": [],
     "enableFiletypes": [
         "!css",
         "!jsonc",
         "!yml",
         "!yaml",
-        "json"
+        "!json",
+        "!js"
     ]
 }
