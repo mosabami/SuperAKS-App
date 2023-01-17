@@ -308,7 +308,7 @@ This exercise shows one of the advantages of containers and kubernetes. You can 
 
 ## Testing & Debugging individual microservices using Bridge to Kubernetes
 Bridge to kubernetes is an amazing tool that allows developers debug and test their code by running their Microservice locally on their computer and having it connect to other microservices running in their kubernetes cluster. This way, they can test changes they make to their local microservice against the entire application already running on kubernetes. For more information about this, check out [this video](https://www.youtube.com/watch?v=yl14NJcUMGU).
-For Bridge to work, you need to be able to run the application locally. We begin by installing the packages required to run the simple express app locally.
+For Bridge to work, you need to be able to run the application locally. We begin by installing the packages required to run the worker node express microservice locally.
 
 1. CD to the directory that has your worker server code
     ```bash
@@ -328,16 +328,16 @@ For Bridge to work, you need to be able to run the application locally. We begin
     ![configuration successful](./media/bridge-config-successful.png)
 1. Click on the "Connect to the cluster" button that pops up at the top of the screen and wait for the connection to be established
 1. When you see the pop-up, click on "Continue" and then "Yes" to provide Bridge to kubernetes the required permission
-1. Once the connection is complete, take not of the host address of the redis-cluster-ip-service. You might need it if you have service discovery issues
+1. Once the connection is complete, take note of the host address of the redis-cluster-ip-service. You might need it if you have service discovery issues
     ![host address of cluster ip service](./media/host-address-redis-service.png)
-1. you can open the ./fib-calculator/worker/index.js file, put a break point on the last line of the script and click on the debug tab to the left
-1. Click on the green "Play" button next to Launch Program on the top left side of the screen to begin debugging
+1. You can open the ./fib-calculator/worker/index.js file, put a break point on the last line of the script and click on the debug tab to the left
+1. Click on the green Play button next to "Launch Program" at the top left side of the screen to begin debugging
 1. Click on the "Continue" button of the debugger to complete the run
-1. If you head to the DEBUG CONSOLE and see an error about connecting to redis, it means you are having service discovery issue.
+1. If you head to the "DEBUG CONSOLE" tab and see an error about connecting to redis, it means you are having service discovery issues.
 1. OPTIONAL To fix redis connection error: In your ./fib-calculator/worker/index.js file, replace ${keys.redisHost} in the redis connection URL with the host address of the redis-cluster-ip-service noted earlier
     ![use host address](./media/used-host-address.png)
 1. Run the debugger and try calculating the fibonacci number for 3 using the web front end on the browser and you will see that the result is not correct. We need to fix this bug.
-    ![incorrect fib calc](./media/used-host-address.png)
+    ![incorrect fib calc](./media/incorrect-fib-calc.png)
 1. Head to the ./fib-calculator/worker/fib.js file and fix the fib function definition by removing the "+ 100" at the end of the second return statement then save it
 1. Head back to the index file and run the debugger again 
 1. Try calculating the fibonacci number for 3 again and you will see that the result is now correct. Try this for other values to be sure.
