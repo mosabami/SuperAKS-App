@@ -86,7 +86,8 @@
         "Dockerhub",
         "Kustomize",
         "OIDC",
-        "JMeter"
+        "JMeter",
+        "KEDA"
     ],
     "ignoreWords": ["ACRNAME","workloadid","kvrbac","loadtesting","fibnumber","PGPASSWORD","PGPORT","PGPASSWORD","PGDATABASE","PGHOST",
                     "PGUSER",
