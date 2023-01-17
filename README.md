@@ -23,7 +23,7 @@ AKS has a lot of amazing features that makes software development and delivery v
 * Horizontal pod autoscaler
 * Cluster autoscaler for easy and quick scaling of your application
 * Azure load testing (preview) to test scalability of your application
-* GitHub Actions and the Draft tool for rapidly building CI/CD pipelines (coming soon)
+* 
 
 If there are other AKS features you'd like to see here that help with developer productivity, please create an issue. PRs are also welcome!
 
@@ -43,6 +43,7 @@ You will also require visual studio code with the following extensions installed
 * Azure tools
 * Bridge to Kubernetes
 * Developer Tools for Azure Kubernetes Service. 
+
 You can install these by searching for them in the Extensions tab.
 
 ## Test the app on your computer (optional)
@@ -355,7 +356,7 @@ For Bridge to work, you need to be able to run the application locally. We begin
     ```
 
 ## Deploy Updated Code using GitHub Action Workflow and the AKS Automated Deployment Feature
-Now that we have pushed our changes to GitHubYou can follow the instructions in [this section of the demo repo](https://github.com/sabbour/contoso-names#create-a-github-actions-workflow) to do use the "Automated Deployment" feature on AKS.
+Now that we have pushed our changes to GitHub, you can follow the instructions in [this section of the demo repo](https://github.com/sabbour/contoso-names#create-a-github-actions-workflow) to use the "Automated Deployment" feature on AKS.
 
 Please note that this is a preview feature that currently has two bugs which you can easily fix to deploy your changes. You can follow the steps below **after** following the instructions above to deploy your workflow which will fail.
 
@@ -369,7 +370,7 @@ The first one is because DevHub hasn't been updated to use Kubelogin. Add:
 to the generated workflow in .github/workflows folder **right before aks-set-context**. 
 The second bug only occurs in AKS clusters which use RBAC for authorization (which is the case in the cluster are using in this workshop). It occurs because the OIDC issuer which provides an identity to the GitHub deployment runner isnt providing sufficient permission to that identity. 
 1. You will need to head to Azure portal and find the AKS cluster. 
-1. Click on "Access Control (IAM)" on the left blade and then click on the "Role Assignments" tab at the top of the "Access Control (IAM)" window. If you scroll down you will see that the github workflow identity only has contributor access to the cluster. Contributor access doesn't permit the runner to deploy to AKS for RBAC clusters. It will need to be granted "Azure Kubernetes Service RBAC Cluster Admin" access. 
+1. Click on "Access Control (IAM)" on the left blade and then click on the "Role Assignments" tab at the top of the "Access Control (IAM)" window. If you scroll down you will see that the github workflow identity only has "Contributor" access to the cluster. Contributor access doesn't permit the runner to deploy to AKS for RBAC clusters. It will need to be granted "Azure Kubernetes Service RBAC Cluster Admin" access. 
 1. Click on "Add" at the top left side of the screen then click on "Add role assignment". 
 1. For role, search for and select "Azure Kubernetes Service RBAC Cluster Admin" then click "Next". 
 1. Click "+ Select members" while User, group, or service principal radio option is selected. Search for "workflowapp" and pick the one that was provided contributor access to your cluster. You might want to choose all the workflowapp available to be sure for demo purposes. 
@@ -381,3 +382,10 @@ The second bug only occurs in AKS clusters which use RBAC for authorization (whi
 
 
 ## Other AKS features that aid developer productivity
+As you have seen, AKS has lots of features that help with developer productivity by automating steps for you. These can help you get to production very quickly. There are many tools that were not covered in this workshop including the following:
+1. [Open service mesh](https://learn.microsoft.com/en-us/azure/aks/open-service-mesh-deploy-addon-az-cli) extension for AKS for workload security by helping limiting pod traffic allowing pods only talk to other pods they need to reducing attach surface
+1. [Dapr](https://learn.microsoft.com/en-us/azure/aks/dapr) extension for AKS, a portable event-driven runtime that simplifies building resilient, stateless, and stateful applications by abstracting away code required connect microservices to datastores, amongst other things
+1. [Flux GitOps](https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/conceptual-gitops-flux2) extension which makes it easy to deploy applications to your cluster using GitOps
+1. We talked about autoscaling your app using horizontal pod autoscaler. With [KEDA](https://learn.microsoft.com/en-us/azure/aks/keda-about) addon for AKS, you can auto scale using other metrics and events
+
+What AKS features for developer productivity would you like me to showcase next? Let me know by creating issues or commenting on existing ones.
