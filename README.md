@@ -4,6 +4,7 @@ In this repo, you will learn about some of the AKS features that make it easier 
 
 ```bash
 git clone https://github.com/mosabami/AKS-Superapp
+cd AKS-Superapp
 ```
 In this workshop, you are a developer who created an app that calculates fibonacci number of indexes. You have written the code and would love to deploy it online. You have chosen to deploy it to a k8s cluster. You have heard AKS is the best place for kubernetes. You decide to try it out yourself.
 
@@ -32,8 +33,10 @@ It is assumed you have basic knowledge of Containers, Kubernetes and Azure. You 
 * [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install),
 * [jq](https://stedolan.github.io/jq/download/), 
 * [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/),
-* [sed](https://gnuwin32.sourceforge.net/packages/sed.htm) (optional)   
-* Azure CLI. 
+* [sed](https://gnuwin32.sourceforge.net/packages/sed.htm) (optional)
+* [node and npm](https://nodejs.org/en/download/) for the Bridge to Kubernetes step
+* Azure CLI
+
 Docker desktop would be required for some optional steps. All commands are designed to run on bash terminals.
 You will also require visual studio code with the following extensions installed for some **optional** steps: 
 * Azure Kubernetes Service
@@ -51,6 +54,8 @@ docker-compose up
 ```
 You can access the website at port 3050 on your local computer using NGINX as an ingress controller. Check out the docker-compose.yaml file for more details.
 ![App running on local computer](./media/running-local.png)
+You can test the app by entering a number under 40, clicking submit and refreshing the page.
+> :bulb: You might find that there is a bug in the fibonacci number calculation. This bug will be fixed in the **Testing & Debugging individual microservices using Bridge to Kubernetes** section of the workshop.
 
 Here is what the architecture of the app looks like
 ![App architecture](./media/service-architecture.png)
@@ -60,15 +65,23 @@ Here is what the architecture of the app looks like
 * Redis microservice runs a redis instance and has a persistent volume claim when deployed to Azure
 * Postgres microservice runs a postgres instance that is currently not persisted. To be replaced by a Azure postgres database in the future
 
+CD out of the fib-calculator folder.
+```bash
+cd ..
+```
+
 ## About the infrastructure
 Now that we have seen the app running locally, it is time to deploy it to AKS. There are preview features being used including [workload identity](https://learn.microsoft.com/en-us/azure/aks/workload-identity-deploy-cluster#register-the-enableworkloadidentitypreview-feature-flag) and [CNI overlay](https://learn.microsoft.com/en-us/azure/aks/azure-cni-overlay#register-the-azureoverlaypreview-feature-flag). You will need to ensure these features are enabled in your subscription before proceeding with the deployment.
-
-### Optional note (ignore this during workshop):
-You can also use AKSC deployment helper UI to make this deployment by clicking on [this link](https://azure.github.io/AKS-Construction/?net.networkPluginMode=true&net.vnetAksSubnetAddressPrefix=10.240.0.0%2F24&net.podCidr=10.244.0.0%2F16&addons.ingress=nginx&deploy.deployItemKey=deployArmCli&addons.workloadIdentity=true), which will lead to some differences in the resources deployed. Do not use the helper UI on your first pass at this workshop.
 
 ### About AKS Landing Zone Accelerator (AKS-LZA)
 [AKS Construction (AKSC)](https://github.com/Azure/Aks-Construction#getting-started) is part of the [AKS landing zone accelerator](https://aka.ms/akslza/referenceimplementation) program and allows rapid development and deployment of secure AKS clusters and its supporting resources using IaC (mostly Bicep), Azure CLI and/or GitHub Actions. AKS Landing Zone Accelerator is a set of tools, resources and guidance that helps deploy and operationalize secure and scalable AKS and supporting services rapidly, AKS Construction helper being one of them. Check out the [official docs](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/scenarios/app-platform/aks/landing-zone-accelerator) for more information.
 > :warning: It is very important to note that the AKS-LZA can be used to develop secure and compliant AKS clusters that are (almost) ready for production. However, many of the best practice guidance are not used in this implementation to facilitate easy learning and deployment in this workshop. **Do not use this configuration for production workloads**. To deploy a more secure environment, consider reading the AKS-LZA docs and/or deploy your environment using a configuration [similar to this](https://azure.github.io/AKS-Construction/?preset=entScaleOps&entscale=online&cluster.AksPaidSkuForSLA=true&cluster.SystemPoolType=Standard&cluster.upgradeChannel=rapid&net.cniDynamicIpAllocation=true&net.maxPods=250&net.podCidr=10.240.100.0%2F24&net.bastion=true&net.azureFirewallsSku=Premium). 
+
+You will need to clone the AKSC repository which has the bicep files our deployment depends on into the IaC folder.
+```bash
+cd IaC
+git clone https://github.com/Azure/AKS-Construction
+```
 
 ## Deployment
 Get the signed in user id so that you can get admin access to the cluster you create
@@ -153,7 +166,7 @@ Draft is a tool that makes it easy to develop resources required to deploy appli
 1. Choose the folder you want your manifest files to be saved in. In this case we will choose the fib-calculator folder which in which the worker folder is
 1. Click on "Manifests" in the resulting prompt
 1. Enter the application name, in this case it will be "superapp-worker" and hit enter
-1. Enter port "5000" and hit enter
+1. Enter port "5001" and hit enter
 1. Choose the superapp namespace. This tool has used other extensions to connect to the k8s cluster and identify the available namespaces
 1. Choose Azure Container Registry 
 1. Choose your Subscription where your cACR subscription is
@@ -168,6 +181,7 @@ AKS DevX tool will automatically create a draft of deployment and service manife
 
 Change the deployment files to use the proper container registry names using sed commands. 
 > :warning: If you are using a mac you will need to change the command to `sed -i '' "s/<ACR name>/$ACRNAME/" client-deployment.yaml`. 
+
 > :bulb: If these sed commands don't work for any reason or if you don't have sed installed, you will need to update these files manually by replacing the placeholders in the files mentioned below.
 ```bash
 cd ../k8s
@@ -194,7 +208,7 @@ Deploy the resources into the superapp namespace.
 ```bash
 kubectl apply -f .
 ```
-> :warning: Depending on the order in which the manifest files are deployed, some pods may not connect and so you might have to redeploy by deleting the deployment and reapplying.
+> :warning: Depending on the order in which the manifest files are deployed, some pods may not connect and so you might have to redeploy by deleting the specific deployments not working and reapplying.
 
 So what have we done here? We are using workload identities. Workload identities is a soon to be released AKS feature that allows you to use any of various identity providers as the identity of your pod. In this case we are using Azure AD as the identity provider and using the AKS cluster as the OIDC issuer. You can use other identity providers as well. This identity will only be assigned to the pods that are using the service account attached to the identity. This way other pods within the same node wont have the same access. This is important for securing your workloads by providing minimum access. In this case, we are using the identity to get access to the Azure Keyvault. Only this identity and consequently the pods configured to use the identity will be able to pull secrets from it and get the postgres database password. Check out the postgres and server deployment yaml files as well as the svc accounts and secret provider class yaml files for more details.
 
@@ -205,8 +219,9 @@ You can now access your application on a web browser (or postman) using the ngin
 ```bash
 kubectl get ingress -n superapp
 ```
-You should be able use the ip address as shown in the screenshot below
+You should be able use the ip address as shown in the screenshot below. You can test the app by entering a number under 40, clicking submit and refreshing the page.
 ![App running on AKS](./media/running-on-aks.png)
+> :bulb: You might find that there is a bug in the fibonacci number calculation. This bug will be fixed in the **Testing & Debugging individual microservices using Bridge to Kubernetes** section of the workshop.
 
 ## Monitoring Scalability testing
 AKS makes it easy to monitor your applications using various tools including Prometheus, Grafana, and Azure monitor. In this workshop, we will be using container insights.
@@ -291,11 +306,78 @@ Lets test it again but this time with threads set to 300 and loops set to 450. Y
 
 This exercise shows one of the advantages of containers and kubernetes. You can optimize the utilization of your nodes (virtual machines) and scale various components of your application independently to increase and decrease based on the demand on that particular service. With AKS CNI overlay, you don't have to worry about IP exhaustion. The overlay network takes care of that for you. You can have max 250 pods in each node with CNI overlay and those IP addresses will be from a different IP space than your node (and virtual network).
 
-
 ## Testing & Debugging individual microservices using Bridge to Kubernetes
 Bridge to kubernetes is an amazing tool that allows developers debug and test their code by running their Microservice locally on their computer and having it connect to other microservices running in their kubernetes cluster. This way, they can test changes they make to their local microservice against the entire application already running on kubernetes. For more information about this, check out [this video](https://www.youtube.com/watch?v=yl14NJcUMGU).
+For Bridge to work, you need to be able to run the application locally. We begin by installing the packages required to run the worker node express microservice locally.
+
+1. CD to the directory that has your worker server code
+    ```bash
+    cd fib-calculator/worker
+    ```
+1. Install the required packages
+    ```bash
+    npm install
+    ```
+1. Open the command pallet (you can do this by shortcut ctrl + shift + p)
+1. Enter bridge and select "Bridge to Kubernetes: Configure"
+1. Select the "worker-cluster-ip-service" service
+1. Enter "5000" as the port
+1. Select "Configure Bridge to Kubernetes without a launch configuration"
+1. Select "No" since you are the only one working on this application. You should see a notification similar to below stating your configuration was successful. 
+1. Click on the "Kubernetes" status bar menu
+    ![configuration successful](./media/bridge-config-successful.png)
+1. Click on the "Connect to the cluster" button that pops up at the top of the screen and wait for the connection to be established
+1. When you see the pop-up, click on "Continue" and then "Yes" to provide Bridge to kubernetes the required permission
+1. Once the connection is complete, take note of the host address of the redis-cluster-ip-service. You might need it if you have service discovery issues
+    ![host address of cluster ip service](./media/host-address-redis-service.png)
+1. You can open the ./fib-calculator/worker/index.js file, put a break point on the last line of the script and click on the debug tab to the left
+1. Click on the green Play button next to "Launch Program" at the top left side of the screen to begin debugging
+1. Click on the "Continue" button of the debugger to complete the run
+1. If you head to the "DEBUG CONSOLE" tab and see an error about connecting to redis, it means you are having service discovery issues.
+1. OPTIONAL To fix redis connection error: In your ./fib-calculator/worker/index.js file, replace ${keys.redisHost} in the redis connection URL with the host address of the redis-cluster-ip-service noted earlier
+    ![use host address](./media/used-host-address.png)
+1. Run the debugger and try calculating the fibonacci number for 3 using the web front end on the browser and you will see that the result is not correct. We need to fix this bug.
+    ![incorrect fib calc](./media/incorrect-fib-calc.png)
+1. Head to the ./fib-calculator/worker/fib.js file and fix the fib function definition by removing the "+ 100" at the end of the second return statement then save it
+1. Head back to the index file and run the debugger again 
+1. Try calculating the fibonacci number for 3 again and you will see that the result is now correct. Try this for other values to be sure.
+    ![correct fib calc](./media/correct-fib-value.png)
+1. You can stop the debugger. Once you are satisfied with the changes, you can disconnect from bridge to kubernetes by clicking on the Kubernetes status bar menu and clicking on "Disconnect current session". You can then head to your Terminal tab and hit any key to close the connection. You might have to delete the current worker deployment and redeploy it again to restore connection to the worker pod running on AKS.
+    ```bash
+    kubectl delete deployment worker-deployment
+    kubectl apply -f worker-deployment.yaml
+    ```
+1. You can now push your changes to GitHub 
+    ```bash
+    git add .
+    git commit -m "fix fib calculation bug and update manifest files"
+    git push origin main
+    ```
 
 ## Deploy Updated Code using GitHub Action Workflow and the AKS Automated Deployment Feature
-You can follow the instructions in [this section of the demo repo](https://github.com/sabbour/contoso-names#create-a-github-actions-workflow) to do this. This repo also has a workflow that automatically spellchecks and checks for broken links. Check out the .github/workflows folder for more details.
+Now that we have pushed our changes to GitHubYou can follow the instructions in [this section of the demo repo](https://github.com/sabbour/contoso-names#create-a-github-actions-workflow) to do use the "Automated Deployment" feature on AKS.
+
+Please note that this is a preview feature that currently has two bugs which you can easily fix to deploy your changes. You can follow the steps below **after** following the instructions above to deploy your workflow which will fail.
+
+The first one is because DevHub hasn't been updated to use Kubelogin. Add:
+```yml
+- name: Set up kubelogin for non-interactive login
+  uses: azure/use-kubelogin@v1
+  with:
+     kubelogin-version: 'v0.0.24'
+```
+to the generated workflow in .github/workflows folder **right before aks-set-context**. 
+The second bug only occurs in AKS clusters which use RBAC for authorization (which is the case in the cluster are using in this workshop). It occurs because the OIDC issuer which provides an identity to the GitHub deployment runner isnt providing sufficient permission to that identity. 
+1. You will need to head to Azure portal and find the AKS cluster. 
+1. Click on "Access Control (IAM)" on the left blade and then click on the "Role Assignments" tab at the top of the "Access Control (IAM)" window. If you scroll down you will see that the github workflow identity only has contributor access to the cluster. Contributor access doesn't permit the runner to deploy to AKS for RBAC clusters. It will need to be granted "Azure Kubernetes Service RBAC Cluster Admin" access. 
+1. Click on "Add" at the top left side of the screen then click on "Add role assignment". 
+1. For role, search for and select "Azure Kubernetes Service RBAC Cluster Admin" then click "Next". 
+1. Click "+ Select members" while User, group, or service principal radio option is selected. Search for "workflowapp" and pick the one that was provided contributor access to your cluster. You might want to choose all the workflowapp available to be sure for demo purposes. 
+    ![giving access ro runner](./media/giving-access-to-runner.png)
+1. Click "Select" then click "Review + assign"
+1. Click "Review + assign" again and wait for the assignment to be complete
+1. Head back to your GH repository and rerun the GitHub Action which you can find in the "Actions" tab in GitHub. Select the failed run then click on "Re-run jobs" on the top right corner of the screen then click on "Re-run all jobs"
+1. Watch it pass this time. After the deployment has completed, head back to your browser and try running a calculation again by entering a number and hitting submit. You will that the result is now calculated correctly on the live site
+
 
 ## Other AKS features that aid developer productivity

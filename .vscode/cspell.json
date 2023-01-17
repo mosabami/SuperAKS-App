@@ -91,7 +91,10 @@
     "ignoreWords": ["ACRNAME","workloadid","kvrbac","loadtesting","fibnumber","PGPASSWORD","PGPORT","PGPASSWORD","PGDATABASE","PGHOST",
                     "PGUSER",
                     "TTFB",
-                    "otherpage"
+                    "otherpage",
+                    "fibcalculator",
+                    "Kubelogin",
+                    "workflowapp"
                 ],
     "import": [],
     "enableFiletypes": [
