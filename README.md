@@ -370,9 +370,9 @@ to the generated workflow in .github/workflows folder **right before aks-set-con
 The second bug only occurs in AKS clusters which use RBAC for authorization (which is the case in the cluster are using in this workshop). It occurs because the OIDC issuer which provides an identity to the GitHub deployment runner isnt providing sufficient permission to that identity. 
 1. You will need to head to Azure portal and find the AKS cluster. 
 1. Click on "Access Control (IAM)" on the left blade and then click on the "Role Assignments" tab at the top of the "Access Control (IAM)" window. If you scroll down you will see that the github workflow identity only has contributor access to the cluster. Contributor access doesn't permit the runner to deploy to AKS for RBAC clusters. It will need to be granted "Azure Kubernetes Service RBAC Cluster Admin" access. 
-1. Click on "Add" at the top left side of the screen then click on "Add role assignemnt". 
+1. Click on "Add" at the top left side of the screen then click on "Add role assignment". 
 1. For role, search for and select "Azure Kubernetes Service RBAC Cluster Admin" then click "Next". 
-1. Click "+ Select members" while User, group, or service principal radio option is selected. Search for workflowapp and pick the one that was provided contributor access to your cluster. You might want to choose all the workflowapp available to be sure for demo purposes. 
+1. Click "+ Select members" while User, group, or service principal radio option is selected. Search for "workflowapp" and pick the one that was provided contributor access to your cluster. You might want to choose all the workflowapp available to be sure for demo purposes. 
     ![giving access ro runner](./media/giving-access-to-runner.png)
 1. Click "Select" then click "Review + assign"
 1. Click "Review + assign" again and wait for the assignment to be complete

@@ -92,7 +92,9 @@
                     "PGUSER",
                     "TTFB",
                     "otherpage",
-                    "fibcalculator"
+                    "fibcalculator",
+                    "Kubelogin",
+                    "workflowapp"
                 ],
     "import": [],
     "enableFiletypes": [
