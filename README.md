@@ -319,7 +319,7 @@ For Bridge to work, you need to be able to run the application locally. We begin
     npm install
     ```
 1. Open the command pallet (you can do this by shortcut ctrl + shift + p)
-1. Enter bridge and select "Bridge to Kuberetes: Configure"
+1. Enter bridge and select "Bridge to Kubernetes: Configure"
 1. Select the "worker-cluster-ip-service" service
 1. Enter "5000" as the port
 1. Select "Configure Bridge to Kubernetes without a launch configuration"
@@ -355,6 +355,29 @@ For Bridge to work, you need to be able to run the application locally. We begin
     ```
 
 ## Deploy Updated Code using GitHub Action Workflow and the AKS Automated Deployment Feature
-Now that we have pushed our changes to GitHubYou can follow the instructions in [this section of the demo repo](https://github.com/sabbour/contoso-names#create-a-github-actions-workflow) to do this. This repo also has a workflow that automatically spellchecks and checks for broken links. Check out the .github/workflows folder for more details.
+Now that we have pushed our changes to GitHubYou can follow the instructions in [this section of the demo repo](https://github.com/sabbour/contoso-names#create-a-github-actions-workflow) to do use the "Automated Deployment" feature on AKS.
+
+Please note that this is a preview feature that currently has two bugs which you can easily fix to deploy your changes. You can follow the steps below **after** following the instructions above to deploy your workflow which will fail.
+
+The first one is because DevHub hasn't been updated to use Kubelogin. Add:
+```yml
+- name: Set up kubelogin for non-interactive login
+  uses: azure/use-kubelogin@v1
+  with:
+     kubelogin-version: 'v0.0.24'
+```
+to the generated workflow in .github/workflows folder **right before aks-set-context**. 
+The second bug only occurs in AKS clusters which use RBAC for authorization (which is the case in the cluster are using in this workshop). It occurs because the OIDC issuer which provides an identity to the GitHub deployment runner isnt providing sufficient permission to that identity. 
+1. You will need to head to Azure portal and find the AKS cluster. 
+1. Click on "Access Control (IAM)" on the left blade and then click on the "Role Assignments" tab at the top of the "Access Control (IAM)" window. If you scroll down you will see that the github workflow identity only has contributor access to the cluster. Contributor access doesn't permit the runner to deploy to AKS for RBAC clusters. It will need to be granted "Azure Kubernetes Service RBAC Cluster Admin" access. 
+1. Click on "Add" at the top left side of the screen then click on "Add role assignemnt". 
+1. For role, search for and select "Azure Kubernetes Service RBAC Cluster Admin" then click "Next". 
+1. Click "+ Select members" while User, group, or service principal radio option is selected. Search for workflowapp and pick the one that was provided contributor access to your cluster. You might want to choose all the workflowapp available to be sure for demo purposes. 
+    ![giving access ro runner](./media/giving-access-to-runner.png)
+1. Click "Select" then click "Review + assign"
+1. Click "Review + assign" again and wait for the assignment to be complete
+1. Head back to your GH repository and rerun the GitHub Action which you can find in the "Actions" tab in GitHub. Select the failed run then click on "Re-run jobs" on the top right corner of the screen then click on "Re-run all jobs"
+1. Watch it pass this time. After the deployment has completed, head back to your browser and try running a calculation again by entering a number and hitting submit. You will that the result is now calculated correctly on the live site
+
 
 ## Other AKS features that aid developer productivity
