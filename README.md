@@ -350,7 +350,7 @@ For Bridge to work, you need to be able to run the application locally. We begin
 1. You can now push your changes to GitHub 
     ```bash
     git add .
-    git commit -m "initial commit"
+    git commit -m "fix fib calculation bug and update manifest files"
     git push origin main
     ```
 
