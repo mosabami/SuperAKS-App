@@ -162,7 +162,7 @@ az acr repository list --name $ACRNAME --resource-group $RGNAME
 Draft is a tool that makes it easy to develop resources required to deploy applications to kubernetes. This includes the creation of Docker files, Kubernetes manifest files, Helm charts, Kustomize files, GitHub Action pipelines, etc. In this section, we will be showcasing the use of Draft to crete Kubernetes manifest files to speed up the creation of resources required to deploy to kubernetes using the Developer Tools for Azure Kubernetes Service extension. You can also do this using the Draft CLI. For more information about the features of this extension, check out [this video](https://microsofteur-my.sharepoint.com/personal/asabbour_microsoft_com/_layouts/15/stream.aspx?id=%2Fpersonal%2Fasabbour%5Fmicrosoft%5Fcom%2FDocuments%2FWork%2FFY23%20%2D%20PM%2FDevX%2FDevX%20Demo%2Emp4&ct=1673905797417&or=Teams-HL&ga=1) that walks you through it later if you are a Microsoft employee or check out the [demo repo](https://github.com/sabbour/contoso-names) otherwise. 
 > :warning: For the Draft and Developer Tools for AKS extension to work properly, you need to ensure your file path is not too long. Make sure you are working off a folder that doesn't have a long file path.
 
-> :bulb: At this point, you might want to switch to a different branch so that the changes you are about to make to the files dont carry on to your main branch allowing you to rerun this workshop in the future easily: `git checkout -b test`
+> :bulb: At this point, you might want to switch to a different branch so that the changes you are about to make to the files don't carry on to your main branch allowing you to rerun this workshop in the future easily: `git checkout -b test`
 
 1. Expand the fib-calculator folder
 1. Right click on the "worker" folder on the left side of the screen in your repo within vs-code. Hover over "Run AKS DevX Tool" then click on "AKS Developer: Draft a Kubernetes Deployment and Service
@@ -213,6 +213,10 @@ Deploy the resources into the superapp namespace.
 kubectl apply -f .
 ```
 > :warning: Depending on the order in which the manifest files are deployed, some pods may not connect and so you might have to redeploy by deleting the specific deployments not working and reapplying.
+
+```bash
+kubectl delete -f server-deployment.yaml  && kubectl apply -f server-deployment.yaml 
+```
 
 So what have we done here? We are using workload identities. Workload identities is a soon to be released AKS feature that allows you to use any of various identity providers as the identity of your pod. In this case we are using Azure AD as the identity provider and using the AKS cluster as the OIDC issuer. You can use other identity providers as well. This identity will only be assigned to the pods that are using the service account attached to the identity. This way other pods within the same node wont have the same access. This is important for securing your workloads by providing minimum access. In this case, we are using the identity to get access to the Azure Keyvault. Only this identity and consequently the pods configured to use the identity will be able to pull secrets from it and get the postgres database password. Check out the postgres and server deployment yaml files as well as the svc accounts and secret provider class yaml files for more details.
 
