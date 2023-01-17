@@ -1,9 +1,10 @@
 const keys = require('./keys');
 const redis = require('redis');
-
+const fib = require('./fib')
 
 
 const redisClient = redis.createClient({
+  // url: `redis://127.1.1.18:${keys.redisPort}`
   url: `redis://${keys.redisHost}:${keys.redisPort}`
 });
 redisClient.on('error', (err) => console.log('Redis Client Error', err));
@@ -11,13 +12,9 @@ const sub = redisClient.duplicate();
 
 redisClient.connect()
 sub.connect()
-function fib(index) {
-  if (index < 2) return 1;
-  return fib(index - 1) + fib(index - 2) ;
-}
 
 sub.subscribe('insert', ( message) => {
-  redisClient.hSet('values', message, fib(parseInt(message)));
+  redisClient.hSet('values', message, fib.fib(parseInt(message)));
 });
 
 // this section is used to test out bridge to kubernetes
@@ -31,7 +28,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.get("/", async (req, res) => {
-  res.send("<h1>hello!</h1>")
+  res.send("<h1>hi!!</h1>")
 });
 
 
@@ -46,7 +43,7 @@ app.get("/fib", async (req, res) => {
     console.log("Index too high")
     return res.status(422).send("Index too high");
   }
-  const fibnumber = fib(number)
+  const fibnumber = fib.fib(number)
   await redisClient.hSet("values", number, fibnumber);
     res.send(`<h1>${fibnumber}</h1>`);
     // res.send(`hello`);
