@@ -388,6 +388,14 @@ The first one is because DevHub hasn't been updated to use Kubelogin. Add:
      kubelogin-version: 'v0.0.24'
 ```
 to the generated workflow in .github/workflows folder **right before aks-set-context**. 
+You will also need to add the following to AKS set context (under with):
+```yml
+    admin: 'false'
+    use-kubelogin: 'true'
+```
+Your pipeline file should look similar to the picture below:
+![correct pipeline](./media/updating-pipeline-file.png)
+
 The second bug only occurs in AKS clusters which use RBAC for authorization (which is the case in the cluster are using in this workshop). It occurs because the OIDC issuer which provides an identity to the GitHub deployment runner isnt providing sufficient permission to that identity. 
 1. You will need to head to Azure portal and find the AKS cluster. 
 1. Click on "Access Control (IAM)" on the left blade and then click on the "Role Assignments" tab at the top of the "Access Control (IAM)" window. If you scroll down you will see that the github workflow identity only has "Contributor" access to the cluster. Contributor access doesn't permit the runner to deploy to AKS for RBAC clusters. It will need to be granted "Azure Kubernetes Service RBAC Cluster Admin" access. 
