@@ -283,12 +283,12 @@ To allow more worker pods to be scheduled, we will enable Cluster Autoscaler. Cl
 
 1. Run the following command to change the default cluster autoscaler profile (default values can be found in the AKS Cluster REST API documentation). These parameters enable a rather aggressive scale-down to avoid longer waiting times in this tutorial. Please be mindful when setting these values in your own cluster.
     ```azurecli
-    	az aks update \
-    		--resource-group $RGNAME \
-    		--name $AKSCLUSTER \
-    		--cluster-autoscaler-profile \
-    		scale-down-unneeded-time=2m \
-    		scale-down-utilization-threshold=0.8
+    az aks update \
+        --resource-group $RGNAME \
+        --name $AKSCLUSTER \
+        --cluster-autoscaler-profile \
+        scale-down-unneeded-time=2m \
+        scale-down-utilization-threshold=0.8
     ```
 1. Enable autoscaling between a number of 1 and 5 nodes on your npuser01 node pool :
     ```azurecli
@@ -318,6 +318,19 @@ This exercise shows one of the advantages of containers and kubernetes. You can 
 Bridge to kubernetes is an amazing tool that allows developers debug and test their code by running their Microservice locally on their computer and having it connect to other microservices running in their kubernetes cluster. This way, they can test changes they make to their local microservice against the entire application already running on kubernetes. For more information about this, check out [this video](https://www.youtube.com/watch?v=yl14NJcUMGU).
 For Bridge to work, you need to be able to run the application locally. We begin by installing the packages required to run the worker node express microservice locally.
 
+> :warning: To begin you might have to set the context of kubeconfig to use the superapp namespace in order for bridge to kubernetes to work properly. You would also want to delete the worker hpa and redeploy the worker deployment.
+
+```bash
+kubectl config set-context --current --namespace=superapp
+```
+```bash
+kubectl delete -f worker-hpa.yaml
+```
+```bash
+cd ../fib-calculator/k8s
+kubectl delete -f worker-deployment.yaml && kubectl apply -f worker-deployment.yaml
+```
+
 1. CD to the directory that has your worker server code
     ```bash
     cd fib-calculator/worker
@@ -327,7 +340,7 @@ For Bridge to work, you need to be able to run the application locally. We begin
     npm install
     ```
 1. Open the command pallet (you can do this by shortcut ctrl + shift + p)
-1. Enter bridge and select "Bridge to Kubernetes: Configure"
+1. Type "bridge" and select "Bridge to Kubernetes: Configure"
 1. Select the "worker-cluster-ip-service" service
 1. Enter "5000" as the port
 1. Select "Configure Bridge to Kubernetes without a launch configuration"

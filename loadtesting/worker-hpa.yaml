@@ -10,4 +10,4 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: worker-deployment
-  targetCPUUtilizationPercentage: 80
+  targetCPUUtilizationPercentage: 50
