@@ -112,4 +112,4 @@ dist
 .tern-port
 
 # others
-launch.json
+task.json

@@ -5,7 +5,7 @@ metadata:
   namespace: superapp
 spec:
   maxReplicas: 25
-  minReplicas: 2
+  minReplicas: 1
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment

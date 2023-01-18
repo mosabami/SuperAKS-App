@@ -87,7 +87,8 @@
         "Kustomize",
         "OIDC",
         "JMeter",
-        "KEDA"
+        "KEDA",
+        "kubeconfig"
     ],
     "ignoreWords": ["ACRNAME","workloadid","kvrbac","loadtesting","fibnumber","PGPASSWORD","PGPORT","PGPASSWORD","PGDATABASE","PGHOST",
                     "PGUSER",
