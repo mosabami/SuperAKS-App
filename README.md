@@ -388,7 +388,7 @@ The first one is because DevHub hasn't been updated to use Kubelogin. Add:
      kubelogin-version: 'v0.0.24'
 ```
 to the generated workflow in .github/workflows folder **right before aks-set-context**. 
-You will also need to add the following aks set context (under with):
+You will also need to add the following to AKS set context (under with):
 ```yml
     admin: 'false'
     use-kubelogin: 'true'
