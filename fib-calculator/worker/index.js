@@ -5,7 +5,7 @@ const fib = require('./fib')
 
 const redisClient = redis.createClient({
   // url: `redis://127.1.1.18:${keys.redisPort}`
-  url: `redis://${keys.redisHost}:${keys.redisPort}`
+  url: `redis://127.1.1.1:${keys.redisPort}`
 });
 redisClient.on('error', (err) => console.log('Redis Client Error', err));
 const sub = redisClient.duplicate();
@@ -28,7 +28,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.get("/", async (req, res) => {
-  res.send("<h1>hi!!</h1>")
+  res.send("<h1>hello!!</h1>")
 });
 
 
