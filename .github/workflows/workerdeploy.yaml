@@ -45,6 +45,10 @@ jobs:
                 client-id: ${{ secrets.AZURE_CLIENT_ID }}
                 subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
                 tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            - name: Set up kubelogin for non-interactive login
+              uses: azure/use-kubelogin@v1
+              with:
+                kubelogin-version: 'v0.0.24'
             - uses: azure/aks-set-context@v3
               name: Get K8s context
               with:
