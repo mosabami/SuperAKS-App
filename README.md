@@ -23,7 +23,6 @@ AKS has a lot of amazing features that makes software development and delivery v
 * Horizontal pod autoscaler
 * Cluster autoscaler for easy and quick scaling of your application
 * Azure load testing (preview) to test scalability of your application
-* 
 
 If there are other AKS features you'd like to see here that help with developer productivity, please create an issue. PRs are also welcome!
 
