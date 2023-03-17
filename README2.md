@@ -3,10 +3,10 @@ In this repo, you will learn about some of the AKS features that make it easier 
 > :warning: You will need to fork this repo and clone your fork in order to complete the steps requiring updating the GitHub(GH) repository and using GH Actions for deployment. I recommend you do this and clone **your** repo instead of the repo used in the command below.
 
 ```bash
-git clone https://github.com/mosabami/AKS-Superapp
+git clone --recurse-submodules  https://github.com/mosabami/AKS-Superapp 
 cd AKS-Superapp
 ```
-In this workshop, you are a developer who created an app that calculates fibonacci number of indexes. You have written the code and would love to deploy it online. You have chosen to deploy it to a k8s cluster. You have heard AKS is the best place for kubernetes. You decide to try it out yourself.
+In this workshop, you are a developer who created an app that identifies faces in pictures submitted to the app (check out the repository for more information about the app itself). You have written the code and would love to deploy it online. You have chosen to deploy it to a k8s cluster. You have heard AKS is the best place for kubernetes. You decide to try it out yourself.
 
 AKS has a lot of amazing features that makes software development and delivery very easy. It takes care of a lot of the infrastructure security related heavy lifting for you. In this workshop we will discuss the following features of AKS:
 * Bicep IaC to make it easier and quicker to deploy AKS and its supporting resources in a reproducible way
