@@ -1,0 +1,3 @@
+[submodule "smartbrain"]
+	path = smartbrain
+	url = https://github.com/mosabami/smartbrain
