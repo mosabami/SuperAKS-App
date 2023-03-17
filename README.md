@@ -4,7 +4,7 @@ In this repo, you will learn about some of the AKS features that make it easier 
 
 ```bash
 git clone --recurse-submodules https://github.com/mosabami/SuperAKS-App
-cd AKS-Superapp
+cd SuperAKS-App
 ```
 In this workshop, you are a developer who created an app that calculates fibonacci number of indexes. You have written the code and would love to deploy it online. You have chosen to deploy it to a k8s cluster. You have heard AKS is the best place for kubernetes. You decide to try it out yourself.
 
