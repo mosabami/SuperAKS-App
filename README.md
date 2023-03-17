@@ -3,7 +3,7 @@ In this repo, you will learn about some of the AKS features that make it easier 
 > :warning: You will need to fork this repo and clone your fork in order to complete the steps requiring updating the GitHub(GH) repository and using GH Actions for deployment. I recommend you do this and clone **your** repo instead of the repo used in the command below.
 
 ```bash
-git clone https://github.com/mosabami/AKS-Superapp
+git clone --recurse-submodules https://github.com/mosabami/SuperAKS-App
 cd AKS-Superapp
 ```
 In this workshop, you are a developer who created an app that calculates fibonacci number of indexes. You have written the code and would love to deploy it online. You have chosen to deploy it to a k8s cluster. You have heard AKS is the best place for kubernetes. You decide to try it out yourself.
