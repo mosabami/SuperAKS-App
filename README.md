@@ -29,9 +29,9 @@ If there are other AKS features you'd like to see here that help with developer 
 ## Prerequisites
 It is assumed you have basic knowledge of Containers, Kubernetes and Azure. You would also require Contributor and User Access Admin access to an Azure subscription and an AAD tenant where you have User Admin access. On your computer you will need to have the following installed
 * git, 
-* [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install),
-* [jq](https://stedolan.github.io/jq/download/), 
-* [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/),
+* [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/install)
+* [jq](https://stedolan.github.io/jq/download/)
+* [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/)
 * [sed](https://gnuwin32.sourceforge.net/packages/sed.htm) (optional)
 * [node and npm](https://nodejs.org/en/download/) for the Bridge to Kubernetes step
 * Azure CLI
@@ -46,16 +46,24 @@ You will also require visual studio code with the following extensions installed
 You can install these by searching for them in the Extensions tab.
 
 ## Test the app on your computer (optional)
-If you have docker desktop install on your computer and you have some experience with docker-compose you can run the application on your local computer. 
+If you have docker desktop install and started on your computer, and you have some experience with docker-compose you can run the application on your local computer. 
+Introduce a bug in the code so that we can correct it later
+> :warning: If you are using a mac you will need to change the command to `sed -i  "s/Sign In/Signing In/" smartbrain/smartbrain/smartbrainclient/src/components/Signin/Signin.js`. 
+
+> :bulb: If these sed commands don't work for any reason or if you don't have sed installed, you will need to update these files manually by replacing the placeholders in the files mentioned below.
+```bash
+sed -i  "s/Sign In/Signing In/" smartbrain/smartbrain/smartbrainclient/src/components/Signin/Signin.js
+```
 Run the application using docker-compose.
 ```bash
-cd fib-calculator
+cd smartbrain/smartbrain
 docker-compose up
 ```
 You can access the website at port 3050 on your local computer using NGINX as an ingress controller. Check out the docker-compose.yaml file for more details.
 ![App running on local computer](./media/running-local.png)
-You can test the app by entering a number under 40, clicking submit and refreshing the page.
-> :bulb: You might find that there is a bug in the fibonacci number calculation. This bug will be fixed in the **Testing & Debugging individual microservices using Bridge to Kubernetes** section of the workshop.
+You can test the app by clicking on register and providing the required information. 
+
+> :bulb: You might find that there is a bug in the spelling of Password. This bug will be fixed in the **Testing & Debugging individual microservices using Bridge to Kubernetes** section of the workshop.
 
 Here is what the architecture of the app looks like
 ![App architecture](./media/service-architecture.png)
