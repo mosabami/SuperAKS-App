@@ -7,11 +7,24 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Launch Program with Kubernetes",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\smartbrain\\smartbrain\\smartbrainapi\\server.js",
+            "preLaunchTask": "bridge-to-kubernetes.resource",
+            "env": {
+                "GRPC_DNS_RESOLVER": "native"
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Launch Program",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\fib-calculator\\worker\\index.js"
+            "program": "${workspaceFolder}\\smartbrain\\smartbrain\\smartbrainapi\\server.js"
         }
     ]
 }

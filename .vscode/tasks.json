@@ -4,10 +4,10 @@
 		{
 			"label": "bridge-to-kubernetes.resource",
 			"type": "bridge-to-kubernetes.resource",
-			"resource": "worker-cluster-ip-service",
+			"resource": "api-service",
 			"resourceType": "service",
 			"ports": [
-				5001
+				5000
 			],
 			"targetCluster": "aks-superapp",
 			"targetNamespace": "superapp",

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: serversa
+  namespace: superapp
+  annotations:
+    azure.workload.identity/client-id: <identity clientID>
+    azure.workload.identity/tenant-id: <tenant ID>
+  labels:
+    azure.workload.identity/use: "true"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: workersa
+  namespace: superapp

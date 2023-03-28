@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: worker-service
+  namespace: superapp
+spec:
+  type: ClusterIP
+  selector:
+    component: worker
+  ports:
+    - port: 2000
+      targetPort: 2000
+      
