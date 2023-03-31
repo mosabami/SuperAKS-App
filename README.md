@@ -6,7 +6,9 @@ In this repo, you will learn about some of the AKS features that make it easier 
 git clone --recurse-submodules https://github.com/mosabami/SuperAKS-App
 cd SuperAKS-App
 ```
-In this workshop, you are a developer who created an app that calculates fibonacci number of indexes. You have written the code and would love to deploy it online. You have chosen to deploy it to a k8s cluster. You have heard AKS is the best place for kubernetes. You decide to try it out yourself.
+In this workshop, you are a developer who created the POC of a promotional app for your organization that showcases one of their ML API. The app includes a ML model that identifies the location of faces in pictures provided to it via URL.
+![App running on local computer](./media/smartbrain.png)
+You have written the code and would love to deploy it online. You have chosen to deploy it to a k8s cluster. You have heard AKS is the best place for kubernetes. You decide to try it out yourself.
 
 AKS has a lot of amazing features that makes software development and delivery very easy. It takes care of a lot of the infrastructure security related heavy lifting for you. In this workshop we will discuss the following features of AKS:
 * Bicep IaC to make it easier and quicker to deploy AKS and its supporting resources in a reproducible way
