@@ -5,7 +5,7 @@ metadata:
   name: worker-deployment
   namespace: superapp
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       component: worker
@@ -19,11 +19,11 @@ spec:
         - name: worker
           resources:
             requests:
-              cpu: 250m
+              cpu: 50m
               memory: 128Mi
             limits:
-              cpu: 1000m
-              memory: 256Mi
+              cpu: 200m
+              memory: 512Mi
           image: <ACR name>.azurecr.io/worker:v1
           ports:
             - containerPort: 2000

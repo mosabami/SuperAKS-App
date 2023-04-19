@@ -28,7 +28,7 @@ spec:
           command: ['sh', '-c', "until nslookup postgres-service.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for postgres-service; sleep 2; done"]
       containers:
         - name: server
-          image: <ACR name>.azurecr.io/server:v20
+          image: <ACR name>.azurecr.io/server:v1
           imagePullPolicy: Always
           resources:
             requests:

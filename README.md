@@ -31,24 +31,28 @@ If there are other AKS features you'd like to see here that help with developer 
 ## Prerequisites
 Check out the [Prerequisites page](./prerequisites.md) for information on this. 
 
-## Test the app on your computer (optional)
-If you have docker desktop install and started on your computer, and you have some experience with docker-compose you can run the application on your local computer. 
 Introduce a bug in the code so that we can correct it later
-> :warning: If you are using a mac you will need to change the command to `sed -i '' "s/Sign In/Signing In/" smartbrain/smartbrain/smartbrainclient/src/components/Signin/Signin.js`.
+> :warning: If you are using a mac you will need to change the command to `sed -i ''  "s/bug = false/bug = true/" smartbrain/smartbrain/smartbrainapi/server.js`.
 
 > :bulb: If these sed commands don't work for any reason or if you don't have sed installed, you will need to update these files manually by replacing the placeholders in the files mentioned below.
 ```bash
 sed -i  "s/bug = false/bug = true/" smartbrain/smartbrain/smartbrainapi/server.js
 ```
+
+## Test the app on your computer (optional)
+If you have docker desktop install and started on your computer, and you have some experience with docker-compose you can run the application on your local computer. 
+
 Run the application using docker-compose.
 ```bash
 cd smartbrain/smartbrain
 docker-compose up
 ```
-You can access the website at port 3050 on your local computer using NGINX as an ingress controller. Check out the docker-compose.yaml file for more details.
+You can access the website at port **3050** on your local computer using NGINX as an ingress controller. Check out the docker-compose.yaml file for more details.
 ![App running on local computer](./media/running-local.png)
-You can test the app by clicking on register and providing the required information. 
+You can test the app by clicking on register and providing the required information.
 
+You will notice that even though the app is able to detect the face, there is an error in the detection count. This is the error we intentionally added earlier. We fill fix this at a later step.
+![incorrect detection count](./media/incorrect-count.png)
 Here is what the architecture of the app looks like
 ![App architecture](./media/service-architecture.png)
 * The Nginx service acts as a load balancer routing traffic to the appropriate service based on config
@@ -100,13 +104,13 @@ TENANTID=$(az account show --query tenantId -o tsv)
 ACRNAME=$(az acr list -g $RGNAME --query [0].name  -o tsv)
 ```
 
-Log into AKS and deploy NGINX ingress. Since we are using 
+Log into AKS and deploy NGINX ingress. 
 ```bash
 az aks get-credentials -n $AKSCLUSTER -g $RGNAME --overwrite-existing
 kubectl get nodes
 ```
 
-Run the command in the [official nginx docs page](https://kubernetes.github.io/ingress-nginx/deploy/#azure) to install the nginx ingress controller that will be used later
+Run the command in the [official nginx docs page](https://kubernetes.github.io/ingress-nginx/deploy/#azure) for Azure to install the nginx ingress controller that will be used later
 
 Create the superapp namespace that will be required for future steps
 ```bash
@@ -130,7 +134,7 @@ az acr build -t client:v1 -r $ACRNAME --resource-group $RGNAME .
 Build api image
 ```bash
 cd ../smartbrainapi
-az acr build -t server:v2 -r $ACRNAME --resource-group $RGNAME .
+az acr build -t server:v1 -r $ACRNAME --resource-group $RGNAME .
 ```
 
 Build ML service image
@@ -150,13 +154,13 @@ az acr repository list --name $ACRNAME --resource-group $RGNAME
 ```
 
 ### Use the Draft tool to automatically create Kubernetes Manifest Files (Optional)
-Draft is a tool that makes it easy to develop resources required to deploy applications to kubernetes. This includes the creation of Docker files, Kubernetes manifest files, Helm charts, Kustomize files, GitHub Action pipelines, etc. In this section, we will be showcasing the use of Draft to crete Kubernetes manifest files to speed up the creation of resources required to deploy to kubernetes using the Developer Tools for Azure Kubernetes Service extension. You can also do this using the Draft CLI. For more information about the features of this extension, check out [this video](https://microsofteur-my.sharepoint.com/personal/asabbour_microsoft_com/_layouts/15/stream.aspx?id=%2Fpersonal%2Fasabbour%5Fmicrosoft%5Fcom%2FDocuments%2FWork%2FFY23%20%2D%20PM%2FDevX%2FDevX%20Demo%2Emp4&ct=1673905797417&or=Teams-HL&ga=1) that walks you through it later if you are a Microsoft employee or check out the [demo repo](https://github.com/sabbour/contoso-names) otherwise. 
+Draft is a tool that makes it easy to develop resources required to deploy applications to kubernetes. This includes the creation of Docker files, Kubernetes manifest files, Helm charts, Kustomize files, GitHub Action pipelines, etc. In this section, we will be showcasing the use of Draft to crete Kubernetes manifest files to speed up the creation of resources required to deploy to kubernetes using the Developer Tools for Azure Kubernetes Service extension. For more information about the features of this extension, check out [this video](https://microsofteur-my.sharepoint.com/personal/asabbour_microsoft_com/_layouts/15/stream.aspx?id=%2Fpersonal%2Fasabbour%5Fmicrosoft%5Fcom%2FDocuments%2FWork%2FFY23%20%2D%20PM%2FDevX%2FDevX%20Demo%2Emp4&ct=1673905797417&or=Teams-HL&ga=1) that walks you through it later if you are a Microsoft employee or check out the [demo repo](https://github.com/sabbour/contoso-names) otherwise. 
 > :warning: For the Draft and Developer Tools for AKS extension to work properly, you need to ensure your file path is not too long. Make sure you are working off a folder that doesn't have a long file path.
 
 > :bulb: At this point, you might want to switch to a different branch so that the changes you are about to make to the files don't carry on to your main branch allowing you to rerun this workshop in the future easily: `git checkout -b test`
 
-1. Expand the smartbrain folder
-1. Right click on the "worker" folder on the left side of the screen in your repo within vs-code. Hover over "Run AKS DevX Tool" then click on "AKS Developer: Draft a Kubernetes Deployment and Service
+1. Expand the smartbrain/smartbrain folder
+1. Right click on the "smartbrainml" folder on the left side of the screen in your repo within vs-code. Hover over "Run AKS DevX Tool" then click on "AKS Developer: Draft a Kubernetes Deployment and Service
     ![using the AKS DevX Tool](./media/create-manifests-draft.png)
 1. Choose the folder you want your manifest files to be saved in. In this case we will choose the fib-calculator folder which in which the worker folder is
 1. Click on "Manifests" in the resulting prompt
@@ -164,7 +168,7 @@ Draft is a tool that makes it easy to develop resources required to deploy appli
 1. Enter port "2000" and hit enter
 1. Choose the superapp namespace. This tool has used other extensions to connect to the k8s cluster and identify the available namespaces
 1. Choose Azure Container Registry 
-1. Choose your Subscription where your cACR subscription is
+1. Choose your Subscription where your ACR subscription is
 1. Choose the Resource Group where your ACR resides
 1. Choose your ACR
 1. Select your worker registry
@@ -208,11 +212,7 @@ Deploy the resources into the superapp namespace.
 ```bash
 kubectl apply -f .
 ```
-> :warning: Depending on the order in which the manifest files are deployed, some pods may not connect and so you might have to redeploy by deleting the specific deployments not working and reapplying.
-
-```bash
-kubectl delete -f api-deployment.yaml  && kubectl apply -f api-deployment.yaml 
-```
+> :bulb: Since the API pod depends on the postgres pod being deployed, we included an init container in the API deployment file which will ensure that the postgres pod is ready before starting the api pod. Check out the API pod definition file to see how to use an init container.
 
 So what have we done here? We are using workload identities. Workload identities is a soon to be released AKS feature that allows you to use any of various identity providers as the identity of your pod. In this case we are using Azure AD as the identity provider and using the AKS cluster as the OIDC issuer. In the future, you will be ale to use other identity providers as well. This identity will only be assigned to the pods that are using the service account attached to the identity. This way other pods within the same node wont have the same access. This is important for securing your workloads by providing minimum access. In this case, we are using the identity to get access to the Azure Keyvault. Only this identity and consequently the pods configured to use the identity will be able to pull secrets from it and get the postgres database password. Check out the postgres and server deployment yaml files as well as the svc accounts and secret provider class yaml files for more details.
 
@@ -250,14 +250,13 @@ Filter to only show pods in your node pool. "Add filter" -> Namespace -> superap
    ![Load testing result first](./media/initial-test-result.png)
 Heading over to the monitoring tab however you can see that the worker pod was heavily utilized. 
 ![Load testing result first](./media/initial-test-monitoring.png)
-The worker pod is the service that calculates the fibonacci number. When the /api/values endpoint gets hit, the API updates redis with the new value in the body of the request. The worker pod, which is subscribed to redis is listening and runs the calculation whenever redis is updated (even if the same number is given repeatedly). It is decoupled form the api pod which is why there was no failure there even though the worker pod was backed up. This means the worker pod was unable to run some of the calculations.
-
-Heading back and refreshing the application in the browser will show that many entries have been entered into the postgres database during the run by the server microservice under "Indexes I have seen". We see lots of "32" because that is the value given in the request body if the /api/values post request. You can inspect the jmx file for more details.
-
+The "login" and "create" tests hit the api pod responsible for handling user related routes. This pod hits the postgres pod used to store user data. The "create" test hits the ML pod that determines the coordinates where the face is in the provided picture. Since the same picture is requested every time in the test, this pod hits the redis pod that has the coordinates cached.
+Container insights shows that even though the api pod is being highly utilized, the ML pod isnt (because it doesnt need to run the pictures through the model every time since the same picture being used for the test's coordinates has already been cached in redis).
+![container insights result first](./media/cpu-usage-10-50.png)
 ### Adding a horizontal pod autoscaler 
-To help the worker pod with the calculations, we will deploy a horizontal pod autoscaler for the worker deployment. cd to the ./loadtesting folder and deploy the horizontal pod autoscaler. Watch the pods to see if there are any new ones being created as we run the load test again
+To help the api pod with the load, we will deploy a horizontal pod autoscaler for the api deployment. cd to the ./loadtesting folder and deploy the horizontal pod autoscaler. Watch the pods to see if there are any new ones being created as we run the load test again
 ```bash
-cd loadtesting
+cd ../loadtesting
 kubectl apply -f .
 kubectl get pods -n superapp -w
 ```
@@ -266,9 +265,9 @@ After a minute or so, after the test is completed, you will find that some new p
 ```bash
 kubectl get pods -n superapp 
 ```
-![worker pods in pending](./media/pods-in-pending.png)
+![api pods in pending](./media/pods-in-pending.png)
 Heading over to Azure monitor will show that the worker pods that were able to be scheduled are all fully utilized
-![worker pods utilized](./media/scheduled-pods-full-utilized.png)
+![api pods utilized](./media/scheduled-pods-full-utilized.png)
 And this is happening in spite of the fact that the node itself is not fully utilized as showed in the nodes tab
 ![node not fully utilized](./media/node-not-fully-utilized.png)
 This is happening because the total requests of all the scheduled pods has reached the available cpu available in the node even though the requested CPUs are not being fully utilized by all the pods in the node. To avoid this, set your requests numbers in your deployment manifest files to a lower number. For the sake of this demo however, we will leave it as is.
@@ -313,7 +312,7 @@ This exercise shows one of the advantages of containers and kubernetes. You can 
 Bridge to kubernetes is an amazing tool that allows developers debug and test their code by running their Microservice locally on their computer and having it connect to other microservices running in their kubernetes cluster. This way, they can test changes they make to their local microservice against the entire application already running on kubernetes. For more information about this, check out [this video](https://www.youtube.com/watch?v=yl14NJcUMGU).
 For Bridge to work, you need to be able to run the application locally. We begin by installing the packages required to run the worker node express microservice locally.
 
-> :warning: To begin you might have to set the context of kubeconfig to use the superapp namespace in order for bridge to kubernetes to work properly. You would also want to delete the worker hpa and redeploy the worker deployment.
+> :warning: To begin you might have to set the context of kubeconfig to use the superapp namespace in order for bridge to kubernetes to work properly. You would also want to delete the api hpa and redeploy the worker deployment.
 
 ```bash
 kubectl config set-context --current --namespace=superapp
@@ -346,33 +345,36 @@ kubectl delete -f api-deployment.yaml && kubectl apply -f api-deployment.yaml
 1. Click on the "Connect to the cluster" button that pops up at the top of the screen and wait for the connection to be established
 1. When you see the pop-up, click on "Continue" and then "Yes" to provide Bridge to kubernetes the required permission
 1. Once the connection is complete, take note of the host address of the postgres-service. You might need it if you have service discovery issues
-    ![host address of cluster ip service](./media/host-address-redis-service.png)
+    ![host address of cluster ip service](./media/host-address-postgres-service.png)
 1. You can open the smartbrain\smartbrain\smartbrainapi\server.js file, put a break point on the last line of the script and click on the debug tab to the left
 1. Click on the green Play button next to "Launch Program" at the top left side of the screen to begin debugging
 1. Click on the "Continue" button of the debugger to complete the run
 1. If you head to the "DEBUG CONSOLE" tab and see an error about connecting to postgres, it means you are having service discovery issues.
-1. OPTIONAL To fix postgres connection error: In your smartbrain\smartbrain\smartbrainapi\server.js file, find the `connection` variable and replace host in the object with the host address of the postgres-service noted earlier
+1. BUGFIX: To fix postgres connection error: In your smartbrain\smartbrain\smartbrainapi\server.js file, find the `connection` variable and replace host in the object with the host address of the postgres-service noted earlier
     ![use host address](./media/used-host-address.png)
-1. Run the debugger and try calculating the fibonacci number for 3 using the web front end on the browser and you will see that the result is not correct. We need to fix this bug.
+1. Run the debugger and on the browser try detecting the face in the picture. You will that the detect count error persists
     ![incorrect rank]
 1. Head to the smartbrain\smartbrain\smartbrainapi\server.js and fix the error by changing the variable, bug to false
 1. Head back to the index file and run the debugger again 
-1. Try calculating the fibonacci number for 3 again and you will see that the result is now correct. Try this for other values to be sure.
-    ![correct rank]
+1. Refresh the browser, sign in and try detecting a face again. You will see that the detect count now works perperly.
+    ![correct detect count](./media/bug-fixed.png)
 1. You can stop the debugger. Once you are satisfied with the changes, you can disconnect from bridge to kubernetes by clicking on the Kubernetes status bar menu and clicking on "Disconnect current session". You can then head to your Terminal tab and hit any key to close the connection. You might have to delete the current api deployment and redeploy it again to restore connection to the worker pod running on AKS.
     ```bash
     kubectl delete deployment api-deployment
     kubectl apply -f api-deployment.yaml
     ```
+> :warning: Before you proceed, set the host value in the connection object back to pgHost (assuming your replaced that variable with the postgres IP address to fix the postgres connection error above)
 1. You can now push your changes to GitHub 
     ```bash
     git add .
     git commit -m "fix ranking error and update manifest files"
-    git push origin main
+    git push origin test # or main assuming that is the branch you are using
     ```
 
 ## Deploy Updated Code using GitHub Action Workflow and the AKS Automated Deployment Feature
 Now that we have pushed our changes to GitHub, you can follow the instructions in [this section of the demo repo](https://github.com/sabbour/contoso-names#create-a-github-actions-workflow) to use the "Automated Deployment" feature on AKS.
+
+You will be using the automated deployment to update the api deployment since that is service that has the bug that was fixed. When prompted to specify your folder ensure you are pointing to the "smartbrain\smartbrain\smartbrainapi" path.
 
 Please note that this is a preview feature that currently has two bugs which you can easily fix to deploy your changes. You can follow the steps below **after** following the instructions above to deploy your workflow which will fail.
 
@@ -398,7 +400,7 @@ The second bug only occurs in AKS clusters which use RBAC for authorization (whi
 1. Click on "Add" at the top left side of the screen then click on "Add role assignment". 
 1. For role, search for and select "Azure Kubernetes Service RBAC Cluster Admin" then click "Next". 
 1. Click "+ Select members" while User, group, or service principal radio option is selected. Search for "workflowapp" and pick the one that was provided contributor access to your cluster. You might want to choose all the workflowapp available to be sure for demo purposes. 
-    ![giving access ro runner](./media/giving-access-to-runner.png)
+    ![giving access to runner](./media/giving-access-to-runner.png)
 1. Click "Select" then click "Review + assign"
 1. Click "Review + assign" again and wait for the assignment to be complete
 1. Head back to your GH repository and rerun the GitHub Action which you can find in the "Actions" tab in GitHub. Select the failed run then click on "Re-run jobs" on the top right corner of the screen then click on "Re-run all jobs"

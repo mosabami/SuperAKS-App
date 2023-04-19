@@ -17,11 +17,11 @@ spec:
         - name: client
           resources:
             requests:
-              cpu: 250m
-              memory: 128Mi
+              cpu: 500m
+              memory: 256Mi
             limits:
               cpu: 1000m
-              memory: 256Mi
+              memory: 512Mi
           imagePullPolicy: Always
           image: <ACR name>.azurecr.io/client:v1
           ports: 

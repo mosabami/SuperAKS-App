@@ -159,17 +159,17 @@
           <collectionProp name="Arguments.arguments">
             <elementProp name="endpoint" elementType="Argument">
               <stringProp name="Argument.name">endpoint</stringProp>
-              <stringProp name="Argument.value">20.242.223.32</stringProp>
+              <stringProp name="Argument.value">20.237.103.190</stringProp>
               <stringProp name="Argument.metadata">=</stringProp>
             </elementProp>
             <elementProp name="threads" elementType="Argument">
               <stringProp name="Argument.name">threads</stringProp>
-              <stringProp name="Argument.value">250</stringProp>
+              <stringProp name="Argument.value">50</stringProp>
               <stringProp name="Argument.metadata">=</stringProp>
             </elementProp>
             <elementProp name="loops" elementType="Argument">
               <stringProp name="Argument.name">loops</stringProp>
-              <stringProp name="Argument.value">200</stringProp>
+              <stringProp name="Argument.value">250</stringProp>
               <stringProp name="Argument.metadata">=</stringProp>
             </elementProp>
           </collectionProp>
