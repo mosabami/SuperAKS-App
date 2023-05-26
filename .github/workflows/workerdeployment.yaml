@@ -1,0 +1,59 @@
+name: workerdeployment
+"on":
+    push:
+        branches:
+            - test
+    workflow_dispatch: {}
+env:
+    ACR_RESOURCE_GROUP: superapp4
+    AZURE_CONTAINER_REGISTRY: crsuperapp5hr33n3wdaqve
+    CLUSTER_NAME: aks-superapp
+    CLUSTER_RESOURCE_GROUP: superapp4
+    CONTAINER_NAME: worker
+    DEPLOYMENT_MANIFEST_PATH: |
+        ./fib-calculator/k8s/worker-cluster-ip-service.yaml
+        ./fib-calculator/k8s/worker-deployment.yaml
+jobs:
+    buildImage:
+        permissions:
+            contents: read
+            id-token: write
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - uses: azure/login@v1.4.3
+              name: Azure login
+              with:
+                client-id: ${{ secrets.AZURE_CLIENT_ID }}
+                subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+                tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            - name: Build and push image to ACR
+              run: az acr build --image ${{ env.CONTAINER_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ./fib-calculator/worker/Dockerfile ./fib-calculator/worker
+    deploy:
+        permissions:
+            actions: read
+            contents: read
+            id-token: write
+        runs-on: ubuntu-latest
+        needs:
+            - buildImage
+        steps:
+            - uses: actions/checkout@v3
+            - uses: azure/login@v1.4.3
+              name: Azure login
+              with:
+                client-id: ${{ secrets.AZURE_CLIENT_ID }}
+                subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+                tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            - uses: azure/aks-set-context@v3
+              name: Get K8s context
+              with:
+                cluster-name: ${{ env.CLUSTER_NAME }}
+                resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
+            - uses: Azure/k8s-deploy@v4
+              name: Deploys application
+              with:
+                action: deploy
+                images: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
+                manifests: ${{ env.DEPLOYMENT_MANIFEST_PATH }}
+                namespace: superapp
