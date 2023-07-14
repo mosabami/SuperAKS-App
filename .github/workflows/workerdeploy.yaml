@@ -11,8 +11,8 @@ env:
     CLUSTER_RESOURCE_GROUP: superapp
     CONTAINER_NAME: worker
     DEPLOYMENT_MANIFEST_PATH: |
-        ./Kubernetes/frontend-deployment.yaml
-        ./Kubernetes/frontend-service.yaml
+        ./fib-calculator/k8s/worker-deployment.yaml
+        ./fib-calculator/k8s/worker-cluster-ip-service.yaml
 jobs:
     buildImage:
         permissions:
